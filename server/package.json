@@ -1,0 +1,7 @@
+{
+  "name": "@cue-breakers/server",
+  "scripts": {
+    "dev": "go run main.go"
+  }
+}
+

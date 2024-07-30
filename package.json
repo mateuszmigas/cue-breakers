@@ -1,0 +1,14 @@
+{
+  "name": "cue-breakers",
+  "version": "0.1.0",
+  "description": "",
+  "scripts": {
+    "dev:server": "pnpm --filter @cue-breakers/server run dev"
+  },
+  "author": "Mateusz Migas",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18",
+    "pnpm": ">=3"
+  }
+}
