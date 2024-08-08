@@ -59,7 +59,7 @@ async fn create_room(Json(payload): Json<CreateRoom>) -> impl IntoResponse {
             let new_id = rooms.len() as u64 + 1;
             let new_room = GameRoom {
                 id: new_id,
-                name: payload.name,
+                name: payload.name + " " + (rooms.len() + 1).to_string().as_str(),
             };
             rooms.push(new_room.clone());
             info!("creat rooms");
