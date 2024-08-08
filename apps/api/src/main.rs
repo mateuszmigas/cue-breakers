@@ -1,6 +1,4 @@
 use lib_game_logic;
-
-use axum::routing::get;
 use socketioxide::{
     extract::{Data, SocketRef},
     SocketIo,
@@ -8,6 +6,8 @@ use socketioxide::{
 use tower::ServiceBuilder;
 use tower_http::cors::CorsLayer;
 use tracing::info;
+
+mod routes;
 
 #[derive(Debug, serde::Deserialize)]
 struct MessageIn {
@@ -55,11 +55,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let (layer, io) = SocketIo::new_layer();
     io.ns("/", on_connect);
 
-    let app = axum::Router::new().route("/", get(root)).layer(
-        ServiceBuilder::new()
-            .layer(CorsLayer::permissive())
-            .layer(layer),
-    );
+    let app = axum::Router::new()
+        .nest("/api", routes::create_routes())
+        .layer(
+            ServiceBuilder::new()
+                .layer(CorsLayer::permissive())
+                .layer(layer),
+        );
 
     info!("Starting server");
 
@@ -68,9 +70,4 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     axum::serve(listener, app).await?;
 
     Ok(())
-}
-
-async fn root() -> &'static str {
-    let result = "Hello, World!";
-    result
 }

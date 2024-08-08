@@ -1,3 +1,4 @@
-[tasks.dupa]
+[tasks.watch-api]
 workspace = false
-script = ["echo 'This is a custom script for the workspace'"]
+command = "cargo"
+args = ["watch", "-x", "run", "-p", "api"]
