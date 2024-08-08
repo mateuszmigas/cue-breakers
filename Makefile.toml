@@ -1,0 +1,3 @@
+[tasks.dupa]
+workspace = false
+script = ["echo 'This is a custom script for the workspace'"]
