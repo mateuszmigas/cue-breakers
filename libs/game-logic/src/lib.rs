@@ -1,5 +1,7 @@
-pub fn add_one(x: i32) -> i32 {
-    x + 1
+use lib_physics;
+
+pub fn run_game(x: i32, y: i32) -> i32 {
+    lib_physics::add_vectors(x, y)
 }
 
 // #[cfg(test)]

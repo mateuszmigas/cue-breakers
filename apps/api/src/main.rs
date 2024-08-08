@@ -1,4 +1,4 @@
-use game_logic;
+use lib_game_logic;
 
 use axum::routing::get;
 use socketioxide::{
@@ -46,9 +46,11 @@ async fn on_connect(socket: SocketRef) {
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     tracing_subscriber::fmt::init();
-    
-    let num = 10;
-    println!("Hello, world! {num} plus one is {}!", game_logic::add_one(num));
+
+    println!(
+        "Hello, world! plus one is {}!",
+        lib_game_logic::run_game(1, 2)
+    );
 
     let (layer, io) = SocketIo::new_layer();
     io.ns("/", on_connect);
