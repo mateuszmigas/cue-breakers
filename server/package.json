@@ -1,7 +1,0 @@
-{
-  "name": "@cue-breakers/server",
-  "scripts": {
-    "dev": "cargo run"
-  }
-}
-

@@ -1,9 +1,10 @@
 [package]
-name = "server"
+name = "api"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+game-logic = { path = "../../packages/game-logic" }
 axum = "0.7.5"
 chrono = { version = "0.4.38", features = ["serde"] }
 serde = { version = "1.0.204", features = ["derive"] }
