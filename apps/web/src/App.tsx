@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
+import { io } from "socket.io-client";
+
+const socket = io("ws://localhost:3000");
+let connected = false;
 
 type GameRoom = {
   id: string;
@@ -9,7 +13,7 @@ type GameRoom = {
 export const App = () => {
   const [rooms, setRooms] = useState<GameRoom[]>([]);
 
-  const fetchRoons = () => {
+  const fetchRooms = () => {
     fetch("http://localhost:3000/api/rooms")
       .then((res) => res.json())
       .then((data) => setRooms(data));
@@ -18,7 +22,23 @@ export const App = () => {
   useEffect(() => {
     const root = window.document.documentElement!;
     root.classList.add("dark");
-    fetchRoons();
+    fetchRooms();
+  }, []);
+
+  useEffect(() => {
+    if (connected) return;
+    connected = true;
+
+    socket.on("connect", () => {
+      console.log("Connected to socket server", socket.id);
+      socket.emit("join", "room1");
+    });
+    socket.on("message", (msg) => {
+      console.log("Message received", msg);
+    });
+    // socket.on("messages", (msgs) => {
+    //   setMessages(messages);
+    // });
   }, []);
 
   return (
@@ -32,11 +52,21 @@ export const App = () => {
               "Content-Type": "application/json",
             },
           }).then(() => {
-            fetchRoons();
+            fetchRooms();
           });
         }}
       >
         Click me
+      </Button>
+      <Button
+        onClick={() => {
+          socket.emit("message", {
+            room: "room1",
+            text: "Hello from client",
+          });
+        }}
+      >
+        Message
       </Button>
       <div>
         {rooms.map((room) => (
@@ -46,3 +76,4 @@ export const App = () => {
     </div>
   );
 };
+
