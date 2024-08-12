@@ -7,6 +7,15 @@ struct MessageIn {
     text: String,
 }
 
+// #[derive(Debug, Deserialize)]
+// #[serde(tag = "type")]
+// enum MyEnum {
+//     #[serde(rename = "type_a")]
+//     TypeA { field1: String, field2: i32 },
+//     #[serde(rename = "type_b")]
+//     TypeB { field3: String },
+// }
+
 #[derive(serde::Serialize)]
 struct MessageOut {
     text: String,
