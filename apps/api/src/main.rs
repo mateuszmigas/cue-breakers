@@ -22,7 +22,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         );
 
     info!("Starting server");
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
+    let listener = tokio::net::TcpListener::bind("0.0.0.0:3010").await?;
     info!("listening on {}", listener.local_addr()?);
     axum::serve(listener, app).await?;
 
