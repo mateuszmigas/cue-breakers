@@ -1,7 +1,8 @@
+import { apiURL, socketURL } from "@/constants";
 import { useEffect, useMemo } from "react";
 import { io } from "socket.io-client";
 
-const socket = io("ws://localhost:3000");
+const socket = io(socketURL);
 let connected = false;
 
 export type GameRoom = {
@@ -35,13 +36,13 @@ export const useSignalServer = (): SignalServer => {
   const signalServer = useMemo(
     () => ({
       getRooms: async () => {
-        const response = await fetch("http://localhost:3000/api/rooms");
+        const response = await fetch(`${apiURL}/api/rooms`);
         const data = await response.json();
         return data;
       },
       onRoomsUpdate: () => {},
       createRoom: async (name: string) => {
-        const response = await fetch("http://localhost:3000/api/rooms", {
+        const response = await fetch(`${apiURL}/api/rooms`, {
           method: "POST",
           body: JSON.stringify({ name }),
           headers: {
