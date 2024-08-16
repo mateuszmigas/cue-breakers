@@ -14,6 +14,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     dotenv().ok();
     tracing_subscriber::fmt::init();
     let web_public_path = std::env::var("WEB_PUBLIC_PATH").unwrap_or("web".to_string());
+    // let server_url = std::env::var("SERVER_URL").unwrap_or("/".to_string());
 
     let (layer, io) = SocketIo::new_layer();
     io.ns("/", socket::on_connect);

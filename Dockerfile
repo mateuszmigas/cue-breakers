@@ -66,5 +66,7 @@ COPY --from=build-web /app/dist /bin/web
 # Expose the port that the application listens on
 EXPOSE 3010
 
+ENV WEB_PUBLIC_PATH=/bin/web
+
 # Define the command to run when the container starts
 CMD ["/bin/server"]

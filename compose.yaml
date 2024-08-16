@@ -3,8 +3,6 @@ services:
     build:
       context: .
       target: final
-    environment:
-      - WEB_PUBLIC_PATH=/bin/web
     ports:
       - 3010:3010
     restart: always
