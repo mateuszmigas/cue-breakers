@@ -2,7 +2,9 @@ services:
   api:
     build:
       context: .
-      dockerfile: apps/api/Dockerfile
       target: final
+    environment:
+      - WEB_PUBLIC_PATH=/bin/web
     ports:
       - 3010:3010
+    restart: always
