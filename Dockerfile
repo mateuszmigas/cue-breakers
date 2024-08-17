@@ -15,6 +15,9 @@ RUN --mount=type=bind,source=apps/api,target=apps/api \
     --mount=type=bind,source=libs,target=libs \
     --mount=type=bind,source=Cargo.toml,target=Cargo.toml \
     --mount=type=bind,source=Cargo.lock,target=Cargo.lock \
+    --mount=type=cache,target=/app/target/ \
+    --mount=type=cache,target=/usr/local/cargo/git/db \
+    --mount=type=cache,target=/usr/local/cargo/registry/ \
     cargo build --locked --release && \
     # Copy the built executable to a known location
     cp ./target/release/$APP_NAME /bin/server
