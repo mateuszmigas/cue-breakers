@@ -1,4 +1,13 @@
-[tasks.watch-api]
+[tasks.dev-api]
 workspace = false
 command = "cargo"
 args = ["watch", "-x", "run", "-p", "api"]
+
+[tasks.dev-web]
+command = "pnpm"
+workspace = false
+args = ["--filter", "./apps/web", "run", "dev"]
+
+[tasks.dev]
+run_task = { name = ["dev-web", "dev-api"], parallel = true }
+workspace = false
