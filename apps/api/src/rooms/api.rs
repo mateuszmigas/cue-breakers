@@ -69,7 +69,7 @@ async fn create_room(Json(payload): Json<CreateRoom>) -> impl IntoResponse {
     (StatusCode::INTERNAL_SERVER_ERROR, "Rooms not initialized").into_response()
 }
 
-pub fn create_routes() -> Router {
+pub fn create_router() -> Router {
     initialize_rooms();
     Router::new()
         .route("/rooms", get(get_rooms))

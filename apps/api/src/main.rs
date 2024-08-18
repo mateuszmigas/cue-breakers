@@ -5,7 +5,7 @@ use tower_http::{
     services::{ServeDir, ServeFile},
 };
 use tracing::info;
-mod routes;
+mod rooms;
 mod socket;
 use dotenv::dotenv;
 
@@ -23,7 +23,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .not_found_service(ServeFile::new(web_public_path + "/index.html"));
     let app = axum::Router::new()
         .nest_service("/", serve_dir.clone())
-        .nest("/api", routes::create_routes())
+        .nest("/api", rooms::api::create_router())
         .layer(
             ServiceBuilder::new()
                 .layer(CorsLayer::permissive())
