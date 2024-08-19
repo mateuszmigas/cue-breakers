@@ -1,5 +1,8 @@
+use serde::{Deserialize, Serialize};
+
+#[derive(Serialize, Debug, Deserialize, Clone)]
 pub struct GameRoom {
-    id: u64,
-    name: String,
-    player_id: u64,
+    pub id: u64,
+    pub name: String,
+    pub player_id: u64,
 }

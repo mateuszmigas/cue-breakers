@@ -1,40 +1,45 @@
 use std::sync::Mutex;
 
+use super::model::GameRoom;
+use crate::utils::storage::InMemoryStorage;
 use axum::{
     http::StatusCode,
     response::IntoResponse,
     routing::{get, post},
     Json, Router,
 };
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 use tracing::info;
 
 static mut GAME_ROOMS: Option<Mutex<Vec<GameRoom>>> = None;
 
-fn initialize_rooms() {
-    unsafe {
-        GAME_ROOMS = Some(Mutex::new(vec![
-            GameRoom {
-                id: 1,
-                name: String::from("Room 1"),
-            },
-            GameRoom {
-                id: 2,
-                name: String::from("Room 2"),
-            },
-            GameRoom {
-                id: 3,
-                name: String::from("Room 3"),
-            },
-        ]));
-    }
-}
+// fn initialize_rooms() {
+//     unsafe {
+//         GAME_ROOMS = Some(Mutex::new(vec![
+//             GameRoom {
+//                 id: 1,
+//                 name: String::from("Room 1"),
+//                 player_id: 1,
+//             },
+//             GameRoom {
+//                 id: 2,
+//                 name: String::from("Room 2"),
+//                 player_id: 1,
+//             },
+//             GameRoom {
+//                 id: 3,
+//                 name: String::from("Room 3"),
+//                 player_id: 1,
+//             },
+//         ]));
+//     }
+// }
 
-#[derive(Serialize, Deserialize, Clone)]
-struct GameRoom {
-    id: u64,
-    name: String,
-}
+// #[derive(Serialize, Deserialize, Clone)]
+// struct GameRoom {
+//     id: u64,
+//     name: String,
+// }
 
 #[derive(Deserialize)]
 struct CreateRoom {
@@ -60,6 +65,7 @@ async fn create_room(Json(payload): Json<CreateRoom>) -> impl IntoResponse {
             let new_room = GameRoom {
                 id: new_id,
                 name: payload.name + " " + (rooms.len() + 1).to_string().as_str(),
+                player_id: 1,
             };
             rooms.push(new_room.clone());
             info!("creat rooms");
@@ -69,8 +75,8 @@ async fn create_room(Json(payload): Json<CreateRoom>) -> impl IntoResponse {
     (StatusCode::INTERNAL_SERVER_ERROR, "Rooms not initialized").into_response()
 }
 
-pub fn create_router() -> Router {
-    initialize_rooms();
+pub fn create_router(storage: InMemoryStorage<GameRoom>) -> Router {
+    // initialize_rooms();
     Router::new()
         .route("/rooms", get(get_rooms))
         .route("/rooms", post(create_room))
