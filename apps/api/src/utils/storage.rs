@@ -2,13 +2,14 @@ use std::collections::HashMap;
 
 pub trait Storage<T> {
     fn new() -> Self;
-    fn create(&mut self, item: T) -> Result<(), String>;
+    fn add(&mut self, item: T) -> Result<(), String>;
     fn read(&self, id: u64) -> Option<T>;
     fn update(&mut self, id: u64, item: T) -> Result<(), String>;
     fn delete(&mut self, id: u64) -> Result<(), String>;
     fn list(&self) -> Vec<T>;
 }
 
+#[derive(Default)]
 pub struct InMemoryStorage<T> {
     items: HashMap<u64, T>,
     next_id: u64,
@@ -25,7 +26,7 @@ where
         }
     }
 
-    fn create(&mut self, item: T) -> Result<(), String> {
+    fn add(&mut self, item: T) -> Result<(), String> {
         self.items.insert(self.next_id, item);
         self.next_id += 1;
         Ok(())

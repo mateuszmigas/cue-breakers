@@ -1,83 +1,39 @@
-use std::sync::Mutex;
-
 use super::model::GameRoom;
-use crate::utils::storage::InMemoryStorage;
-use axum::{
-    http::StatusCode,
-    response::IntoResponse,
-    routing::{get, post},
-    Json, Router,
-};
+use crate::utils::storage::{InMemoryStorage, Storage};
+use axum::{extract::State, http::StatusCode, response::IntoResponse, routing::get, Json, Router};
 use serde::Deserialize;
-use tracing::info;
+use std::sync::Arc;
+use tokio::sync::RwLock;
 
-static mut GAME_ROOMS: Option<Mutex<Vec<GameRoom>>> = None;
-
-// fn initialize_rooms() {
-//     unsafe {
-//         GAME_ROOMS = Some(Mutex::new(vec![
-//             GameRoom {
-//                 id: 1,
-//                 name: String::from("Room 1"),
-//                 player_id: 1,
-//             },
-//             GameRoom {
-//                 id: 2,
-//                 name: String::from("Room 2"),
-//                 player_id: 1,
-//             },
-//             GameRoom {
-//                 id: 3,
-//                 name: String::from("Room 3"),
-//                 player_id: 1,
-//             },
-//         ]));
-//     }
-// }
-
-// #[derive(Serialize, Deserialize, Clone)]
-// struct GameRoom {
-//     id: u64,
-//     name: String,
-// }
+pub type GameRoomDb = Arc<RwLock<InMemoryStorage<GameRoom>>>;
 
 #[derive(Deserialize)]
 struct CreateRoom {
     name: String,
 }
 
-async fn get_rooms() -> (StatusCode, Json<Vec<GameRoom>>) {
-    info!("Getting rooms");
-    unsafe {
-        if let Some(ref rooms) = GAME_ROOMS {
-            let rooms = rooms.lock().unwrap();
-            return (StatusCode::OK, Json(rooms.clone()));
-        }
-    }
-    (StatusCode::OK, Json(vec![]))
+async fn get_rooms(State(db): State<GameRoomDb>) -> impl IntoResponse {
+    let rooms_db = db.read().await;
+    Json(rooms_db.list())
 }
 
-async fn create_room(Json(payload): Json<CreateRoom>) -> impl IntoResponse {
-    unsafe {
-        if let Some(ref rooms) = GAME_ROOMS {
-            let mut rooms = rooms.lock().unwrap();
-            let new_id = rooms.len() as u64 + 1;
-            let new_room = GameRoom {
-                id: new_id,
-                name: payload.name + " " + (rooms.len() + 1).to_string().as_str(),
-                player_id: 1,
-            };
-            rooms.push(new_room.clone());
-            info!("creat rooms");
-            return (StatusCode::CREATED, Json(new_room)).into_response();
-        }
-    }
-    (StatusCode::INTERNAL_SERVER_ERROR, "Rooms not initialized").into_response()
+async fn create_room(
+    State(db): State<GameRoomDb>,
+    Json(payload): Json<CreateRoom>,
+) -> impl IntoResponse {
+    let mut rooms_db = db.write().await;
+    let new_id = rooms_db.list().len() as u64 + 1;
+    let new_room = GameRoom {
+        id: new_id,
+        name: payload.name + " " + new_id.to_string().as_str(),
+        player_id: 1,
+    };
+    let room = rooms_db.add(new_room);
+    (StatusCode::CREATED, Json(room))
 }
 
-pub fn create_router(storage: InMemoryStorage<GameRoom>) -> Router {
-    // initialize_rooms();
+pub fn create_router(db: GameRoomDb) -> Router {
     Router::new()
-        .route("/rooms", get(get_rooms))
-        .route("/rooms", post(create_room))
+        .route("/rooms", get(get_rooms).post(create_room))
+        .with_state(db)
 }

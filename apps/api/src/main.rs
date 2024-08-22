@@ -3,9 +3,8 @@ mod utils;
 mod web;
 
 use dotenv::dotenv;
-use rooms::model::GameRoom;
+use rooms::api::GameRoomDb;
 use tracing::info;
-use utils::storage::Storage;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -16,10 +15,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let serve_dir = web::create_serve_files(web_public_path);
     let app = axum::Router::new()
         .nest_service("/", serve_dir.clone())
-        .nest(
-            "/api",
-            rooms::api::create_router(utils::storage::InMemoryStorage::<GameRoom>::new()),
-        )
+        .nest("/api", rooms::api::create_router(GameRoomDb::default()))
         .layer(rooms::websocket::create_websockets("/"))
         .fallback_service(serve_dir);
 
