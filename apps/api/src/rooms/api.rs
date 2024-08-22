@@ -21,14 +21,14 @@ async fn create_room(
     State(db): State<GameRoomDb>,
     Json(payload): Json<CreateRoom>,
 ) -> impl IntoResponse {
-    let mut rooms_db = db.write().await;
-    let new_id = rooms_db.list().len() as u64 + 1;
+    let mut rooms_lock = db.write().await;
+    let new_id = rooms_lock.list().len() as u64 + 1;
     let new_room = GameRoom {
         id: new_id,
         name: payload.name + " " + new_id.to_string().as_str(),
         player_id: 1,
     };
-    let room = rooms_db.add(new_room);
+    let room = rooms_lock.add(new_room);
     (StatusCode::CREATED, Json(room))
 }
 
