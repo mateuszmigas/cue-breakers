@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
 type SceneItem =
   | {
@@ -29,20 +28,21 @@ export class SceneRenderer {
 
     const renderer = new THREE.WebGLRenderer({
       canvas: document.querySelector("#scene") as HTMLCanvasElement,
+      antialias: true,
     });
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.setSize(window.innerWidth, window.innerHeight);
-    const controls = new OrbitControls(
-      camera,
-      document.querySelector("#root") as HTMLCanvasElement
-    );
-    controls.update();
     const scene = new THREE.Scene();
     camera.position.set(5, 5, 5);
-    controls.target.set(0, 1.4, 0);
+    const target = new THREE.Vector3(0, 1.4, 0);
+    const radius = 5; // Distance from the target point
+    let angle = 0; //
+
     const animationCallback = () => {
-      controls.update();
-      camera.position.x = 5 * Math.sin(Date.now() * 0.0001);
-      camera.position.z = 5 * Math.cos(Date.now() * 0.0001);
+      angle += 0.01; // Increment angle for rotation
+      camera.position.x = target.x + radius * Math.cos(angle);
+      camera.position.z = target.z + radius * Math.sin(angle);
+      camera.lookAt(target);
       renderer.render(scene, camera);
     };
 

@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { PlayModePage } from "./pages/playModePage";
 import { useSessionStore } from "./store";
 import { sceneRenderer } from "./scenes/sceneRenderer";
+import { Button } from "./components/ui/button";
 
 export const App = () => {
   // const [rooms, setRooms] = useState<GameRoom[]>([]);
@@ -17,8 +18,6 @@ export const App = () => {
   const { page } = useSessionStore();
 
   useEffect(() => {
-    const root = window.document.documentElement!;
-    root.classList.add("light");
     sceneRenderer.setItems("group", [
       {
         type: "gltf-static",
@@ -38,7 +37,10 @@ export const App = () => {
 
   return (
     <div className="size-full">
-      <div className="size-full">
+      <div className="size-full relative">
+        <div className="absolute">
+          <Button onClick={() => {}}>Toggle Light</Button>
+        </div>
         {page === "playMode" && <PlayModePage></PlayModePage>}
         {page === "training" && <div>Training</div>}
       </div>
