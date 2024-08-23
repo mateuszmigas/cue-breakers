@@ -21,6 +21,11 @@ export const App = () => {
     root.classList.add("light");
     sceneRenderer.setItems("group", [
       {
+        type: "gltf-static",
+        url: "Scene.gltf",
+        position: [0, 0, 0],
+      },
+      {
         type: "ball",
         position: [0, 2, 0],
       },
@@ -29,7 +34,6 @@ export const App = () => {
         position: [0, 0, 0],
       },
     ]);
-    sceneRenderer.loadTable();
   }, []);
 
   return (

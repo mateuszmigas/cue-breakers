@@ -5,7 +5,7 @@ export const PageCard = (props: {
   className?: string;
   disabled?: boolean;
 }) => {
-  const { title, imageSrc, onClick, className } = props;
+  const { title, onClick, className } = props;
   return (
     <div
       className={`border w-96 h-48 bg-blue-200 rounded-md p-small ${className}`}
