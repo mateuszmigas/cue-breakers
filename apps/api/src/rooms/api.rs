@@ -5,7 +5,8 @@ use serde::Deserialize;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
-pub type GameRoomDb = Arc<RwLock<InMemoryStorage<GameRoom>>>;
+pub type GameRoomStorage = InMemoryStorage<GameRoom>;
+pub type GameRoomDb = Arc<RwLock<GameRoomStorage>>;
 
 #[derive(Deserialize)]
 struct CreateRoom {
@@ -22,13 +23,10 @@ async fn create_room(
     Json(payload): Json<CreateRoom>,
 ) -> impl IntoResponse {
     let mut rooms_lock = db.write().await;
-    let new_id = rooms_lock.list().len() as u64 + 1;
-    let new_room = GameRoom {
-        id: new_id,
-        name: payload.name + " " + new_id.to_string().as_str(),
+    let room = rooms_lock.add(GameRoom {
+        name: payload.name,
         player_id: 1,
-    };
-    let room = rooms_lock.add(new_room);
+    });
     (StatusCode::CREATED, Json(room))
 }
 
