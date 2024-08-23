@@ -1,5 +1,5 @@
 import { serverUrl } from "@/constants";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { io } from "socket.io-client";
 
 const socket = io(serverUrl);
@@ -8,6 +8,7 @@ let connected = false;
 export type GameRoom = {
   id: string;
   name: string;
+  playerId: number;
 };
 
 export type SignalServer = {
@@ -18,21 +19,19 @@ export type SignalServer = {
 };
 
 export const useSignalServer = (): SignalServer => {
+  const roomsUpdateCallbacksRef = useRef<((rooms: GameRoom[]) => void)[]>([]);
+
   useEffect(() => {
     if (connected) return;
     connected = true;
-
     socket.on("connect", () => {
       console.log("Connected to socket server", socket.id);
-      socket.emit("join", "room1");
     });
-    socket.on("message", (msg) => {
-      console.log("Message received", msg);
+    socket.on("message_room_created", (rooms: GameRoom[]) => {
+      roomsUpdateCallbacksRef.current.forEach((cb) => cb(rooms));
     });
-    // socket.on("messages", (msgs) => {
-    //   setMessages(messages);
-    // });
   }, []);
+
   const signalServer = useMemo(
     () => ({
       getRooms: async () => {
@@ -40,7 +39,13 @@ export const useSignalServer = (): SignalServer => {
         const data = await response.json();
         return data;
       },
-      onRoomsUpdate: () => {},
+      onRoomsUpdate: (callback: (rooms: GameRoom[]) => void) => {
+        roomsUpdateCallbacksRef.current.push(callback);
+        return () => {
+          roomsUpdateCallbacksRef.current =
+            roomsUpdateCallbacksRef.current.filter((cb) => cb !== callback);
+        };
+      },
       createRoom: async (name: string) => {
         const response = await fetch(`${serverUrl}api/rooms`, {
           method: "POST",
@@ -58,3 +63,4 @@ export const useSignalServer = (): SignalServer => {
   );
   return signalServer;
 };
+

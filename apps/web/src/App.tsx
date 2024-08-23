@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Button } from "./components/ui/button";
 
 import { GameRoom, useSignalServer } from "./hooks/useSignalServer";
+import { orderBy } from "./utils/array";
 
 export const App = () => {
   const [rooms, setRooms] = useState<GameRoom[]>([]);
@@ -22,12 +23,9 @@ export const App = () => {
   return (
     <div className="size-full">
       <Button
-        onClick={async () => {
-          const newRoom = await signalServer.createRoom("Room");
-          setRooms((rooms) => [...rooms, newRoom]);
-        }}
+        onClick={() => signalServer.createRoom("Room " + (rooms.length + 1))}
       >
-        Click me
+        Create room
       </Button>
       <Button
         onClick={() => {
@@ -40,7 +38,7 @@ export const App = () => {
         Message
       </Button>
       <div>
-        {rooms.map((room) => (
+        {orderBy(rooms, "name", "desc").map((room) => (
           <div key={room.id}>{room.name}</div>
         ))}
       </div>
