@@ -29,6 +29,7 @@ export const App = () => {
         position: [0, 0, 0],
       },
     ]);
+    sceneRenderer.loadTable();
   }, []);
 
   return (
