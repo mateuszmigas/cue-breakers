@@ -1,47 +1,36 @@
-import { useEffect, useState } from "react";
-import { Button } from "./components/ui/button";
-
-import { GameRoom, useSignalServer } from "./hooks/useSignalServer";
-import { orderBy } from "./utils/array";
+import { useEffect } from "react";
+import { PlayModePage } from "./pages/playModePage";
+import { useSessionStore } from "./store";
 
 export const App = () => {
-  const [rooms, setRooms] = useState<GameRoom[]>([]);
+  // const [rooms, setRooms] = useState<GameRoom[]>([]);
 
-  const signalServer = useSignalServer();
+  // const signalServer = useSignalServer();
 
-  useEffect(() => {
-    signalServer.getRooms().then(setRooms);
-    const unsubscribe = signalServer.onRoomsUpdate(setRooms);
-    return unsubscribe;
-  }, [signalServer]);
+  // useEffect(() => {
+  //   signalServer.getRooms().then(setRooms);
+  //   const unsubscribe = signalServer.onRoomsUpdate(setRooms);
+  //   return unsubscribe;
+  // }, [signalServer]);
+
+  const { page } = useSessionStore();
 
   useEffect(() => {
     const root = window.document.documentElement!;
-    root.classList.add("dark");
+    root.classList.add("light");
   }, []);
 
   return (
     <div className="size-full">
-      <Button
-        onClick={() => signalServer.createRoom("Room " + (rooms.length + 1))}
-      >
-        Create room
-      </Button>
-      <Button
-        onClick={() => {
-          // socket.emit("message", {
-          //   room: "room1",
-          //   text: "Hello from client",
-          // });
-        }}
-      >
-        Message
-      </Button>
-      <div>
+      <div className="size-full">
+        {page === "playMode" && <PlayModePage></PlayModePage>}
+        {page === "training" && <div>Training</div>}
+      </div>
+      {/* <div>
         {orderBy(rooms, "name", "desc").map((room) => (
           <div key={room.id}>{room.name}</div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

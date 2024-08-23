@@ -1,4 +1,14 @@
 /** @type {import('tailwindcss').Config} */
+
+const custom_space = {
+  "very-small": "0.125rem",
+  small: "0.25rem",
+  medium: "0.5rem",
+  big: "0.75rem",
+  "form-field": "0.25rem",
+  "form-field-big": "0.5rem",
+};
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -17,6 +27,8 @@ module.exports = {
       },
     },
     extend: {
+      gap: custom_space,
+      padding: custom_space,
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -74,4 +86,4 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
