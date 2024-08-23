@@ -6,7 +6,7 @@ use std::{
 use serde::{Deserialize, Serialize};
 
 pub trait Storage<T> {
-    fn from_hashmap2(items: HashMap<usize, ItemWithId<T>>) -> Self;
+    fn from_items(items: &[T]) -> Self;
     fn add(&mut self, item: T) -> ItemWithId<T>;
     fn list(&self) -> Vec<ItemWithId<T>>;
 }
@@ -27,7 +27,7 @@ impl<T> ItemWithId<T> {
 
 #[derive(Default)]
 pub struct InMemoryStorage<T> {
-    items: HashMap<usize, ItemWithId<T>>,
+    items: HashMap<usize, T>,
     id_generator: AtomicUsize,
 }
 
@@ -35,22 +35,29 @@ impl<T> Storage<T> for InMemoryStorage<T>
 where
     T: Clone,
 {
-    fn from_hashmap2(items: HashMap<usize, ItemWithId<T>>) -> Self {
-        let id_generator = AtomicUsize::new(items.keys().max().unwrap_or(&0).clone());
+    fn from_items(items: &[T]) -> Self {
+        let id_generator = AtomicUsize::new(0);
+        let items_map: HashMap<usize, _> = items
+            .iter()
+            .map(|item| (id_generator.fetch_add(1, Ordering::Relaxed), item.clone()))
+            .collect();
+
         InMemoryStorage::<T> {
-            items,
+            items: items_map,
             id_generator,
         }
     }
 
     fn add(&mut self, item: T) -> ItemWithId<T> {
         let id = self.id_generator.fetch_add(1, Ordering::Relaxed);
-        let new_item = ItemWithId::<T>::new(id, item);
-        self.items.insert(id, new_item.clone());
-        new_item
+        self.items.insert(id, item.clone());
+        ItemWithId::new(id, item)
     }
 
     fn list(&self) -> Vec<ItemWithId<T>> {
-        self.items.values().cloned().collect()
+        self.items
+            .iter()
+            .map(|(&id, item)| ItemWithId::new(id, item.clone()))
+            .collect()
     }
 }

@@ -2,12 +2,11 @@ mod rooms;
 mod utils;
 mod web;
 
-use crate::rooms::api::GameRoomStorage;
-use crate::rooms::model::GameRoom;
 use dotenv::dotenv;
-use rooms::api::GameRoomDb;
+use rooms::api::GameRoomStorage;
 use std::sync::Arc;
 use tracing::info;
+use utils::storage::Storage;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -16,9 +15,16 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let web_public_path = std::env::var("WEB_PUBLIC_PATH").unwrap_or("web".to_string());
     let serve_dir = web::create_serve_files(web_public_path);
-    let game_room_db = Arc::new(tokio::sync::RwLock::new(GameRoomStorage::from_hashmap2(
-        std::collections::HashMap::new(),
-    )));
+    let game_room_db = Arc::new(tokio::sync::RwLock::new(GameRoomStorage::from_items(&[
+        rooms::model::GameRoom {
+            name: "Room 1".to_string(),
+            player_id: 1,
+        },
+        rooms::model::GameRoom {
+            name: "Room 2".to_string(),
+            player_id: 2,
+        },
+    ])));
     let app = axum::Router::new()
         .nest_service("/", serve_dir.clone())
         .nest("/api", rooms::api::create_router(game_room_db))
