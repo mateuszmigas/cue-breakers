@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { PlayModePage } from "./pages/playModePage";
 import { useSessionStore } from "./store";
+import { sceneRenderer } from "./scenes/sceneRenderer";
 
 export const App = () => {
   // const [rooms, setRooms] = useState<GameRoom[]>([]);
@@ -9,7 +10,7 @@ export const App = () => {
 
   // useEffect(() => {
   //   signalServer.getRooms().then(setRooms);
-  //   const unsubscribe = signalServer.onRoomsUpdate(setRooms);
+  //   const unsubscribe = signalServer.onRoomsUpdate(setRooms);dsa
   //   return unsubscribe;
   // }, [signalServer]);
 
@@ -18,6 +19,16 @@ export const App = () => {
   useEffect(() => {
     const root = window.document.documentElement!;
     root.classList.add("light");
+    sceneRenderer.setItems("group", [
+      {
+        type: "ball",
+        position: [0, 2, 0],
+      },
+      {
+        type: "ball",
+        position: [0, 0, 0],
+      },
+    ]);
   }, []);
 
   return (
