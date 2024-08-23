@@ -1,10 +1,11 @@
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 
-type SceneItem =
+export type SceneItem =
   | {
       type: "ball";
       position: [number, number, number];
+      textureUrl: string;
     }
   | {
       type: "gltf-static";
@@ -39,7 +40,7 @@ export class SceneRenderer {
     let angle = 0; //
 
     const animationCallback = () => {
-      angle += 0.01; // Increment angle for rotation
+      angle += 0.001; // Increment angle for rotation
       camera.position.x = target.x + radius * Math.cos(angle);
       camera.position.z = target.z + radius * Math.sin(angle);
       camera.lookAt(target);
@@ -74,8 +75,15 @@ export class SceneRenderer {
     items.forEach((item) => {
       if (item.type === "ball") {
         const geometry = new THREE.SphereGeometry(0.5, 32, 32);
-        const material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+        const texture = new THREE.TextureLoader().load(item.textureUrl);
+        const material = new THREE.MeshPhongMaterial({
+          map: texture,
+          specular: 0xffffff,
+          shininess: 100,
+        });
         const sphere = new THREE.Mesh(geometry, material);
+        sphere.scale.set(0.15, 0.15, 0.15);
+        sphere.rotation.set(Math.random(), Math.random(), Math.random());
         sphere.position.set(...item.position);
         groupObject.add(sphere);
       } else if (item.type === "gltf-static") {
