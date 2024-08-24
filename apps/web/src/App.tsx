@@ -3,6 +3,7 @@ import { PlayModePage } from "./pages/playModePage";
 import { useSessionStore } from "./store";
 import { SceneItem, sceneRenderer } from "./scenes/sceneRenderer";
 import { Button } from "./components/ui/button";
+import { useGameController } from "./useGameController";
 
 const constants = {
   edgeMinX: -2.731,
@@ -49,6 +50,8 @@ export const App = () => {
     ]);
   }, []);
 
+  useGameController();
+
   return (
     <div className="size-full">
       <div className="size-full relative">
@@ -66,4 +69,3 @@ export const App = () => {
     </div>
   );
 };
-

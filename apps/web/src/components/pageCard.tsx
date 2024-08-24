@@ -8,11 +8,10 @@ export const PageCard = (props: {
   const { title, onClick, className } = props;
   return (
     <div
-      className={`border w-96 h-48 bg-blue-200 rounded-md p-small ${className}`}
+      className={`border w-96 h-48 bg-blue-200/50 rounded-md p-small ${className}`}
       onClick={onClick}
     >
       {title}
     </div>
   );
 };
-

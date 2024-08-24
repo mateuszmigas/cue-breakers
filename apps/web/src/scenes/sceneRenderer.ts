@@ -15,8 +15,8 @@ export type SceneItem =
 
 export class SceneRenderer {
   private scene!: THREE.Scene;
-  // private renderer!: THREE.WebGLRenderer;
-  // private camera!: THREE.PerspectiveCamera;
+  private renderer!: THREE.WebGLRenderer;
+  private camera!: THREE.PerspectiveCamera;
   private groups: Map<string, SceneItem[]> = new Map();
 
   constructor() {
@@ -35,17 +35,6 @@ export class SceneRenderer {
     renderer.setSize(window.innerWidth, window.innerHeight);
     const scene = new THREE.Scene();
     camera.position.set(5, 5, 5);
-    const target = new THREE.Vector3(0, 1.4, 0);
-    const radius = 5; // Distance from the target point
-    let angle = 0; //
-
-    const animationCallback = () => {
-      angle += 0.001; // Increment angle for rotation
-      camera.position.x = target.x + radius * Math.cos(angle);
-      camera.position.z = target.z + radius * Math.sin(angle);
-      camera.lookAt(target);
-      renderer.render(scene, camera);
-    };
 
     const light = new THREE.AmbientLight(0x404040); // soft white light
     scene.add(light);
@@ -58,10 +47,21 @@ export class SceneRenderer {
     directionalLight.position.normalize();
     scene.add(directionalLight);
 
-    renderer.setAnimationLoop(animationCallback);
+    // renderer.setAnimationLoop(animationCallback);
     this.scene = scene;
-    // this.renderer = renderer;
-    // this.camera = camera;
+    this.renderer = renderer;
+    this.camera = camera;
+  }
+
+  angle = 0;
+  render() {
+    const target = new THREE.Vector3(0, 1.4, 0);
+    const radius = 5; // Distance from the target point
+    this.angle += 0.001; // Increment this.angle for rotation
+    this.camera.position.x = target.x + radius * Math.cos(this.angle);
+    this.camera.position.z = target.z + radius * Math.sin(this.angle);
+    this.camera.lookAt(target);
+    this.renderer.render(this.scene, this.camera);
   }
 
   setItems(group: string, items: SceneItem[]) {
@@ -102,4 +102,3 @@ export class SceneRenderer {
 }
 
 export const sceneRenderer = new SceneRenderer();
-
