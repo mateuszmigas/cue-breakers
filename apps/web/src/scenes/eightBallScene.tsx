@@ -1,9 +1,16 @@
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { GO_Ball } from "./objects/ball";
 import { Stats, OrbitControls } from "@react-three/drei";
 import { GO_Table } from "./objects/table";
 import { useRef } from "react";
-import { PerspectiveCamera } from "three";
+import { Mesh } from "three";
+
+/*
+gamestate:
+  - game state: room
+  - local state vs saved state
+
+*/
 
 const constants = {
   edgeMinX: -2.731,
@@ -32,38 +39,25 @@ const balls = Array.from({ length: 16 }, (_, i) => {
   };
 });
 
-function RotatingCamera() {
-  const cameraRef = useRef<PerspectiveCamera | null>(null);
+export const EightBallGameScene = () => {
+  const ballsRefs = useRef<Mesh[]>([]);
 
-  useFrame(() => {
-    if (cameraRef.current) {
-      // console.log("rotating camera");
-      cameraRef.current.rotation.y += 0.1; // Adjust the rotation speed here
-    }
+  useFrame((_, delta) => {
+    ballsRefs.current.forEach((ball) => {
+      ball.rotation.x += delta;
+      ball.rotation.y += delta;
+    });
   });
 
-  return <perspectiveCamera ref={cameraRef} position={[5, 5, 5]} />;
-}
-
-export const EightBallGameScene = () => {
   return (
-    <Canvas
-      className="size-full absolute"
-      camera={{ position: [5, 5, 5], fov: 45 }}
-    >
-      <RotatingCamera />
-      <ambientLight intensity={Math.PI / 2} />
-      <spotLight
-        position={[10, 10, 10]}
-        angle={0.15}
-        penumbra={1}
-        decay={0}
-        intensity={Math.PI}
-      />
-      <pointLight position={[-10, -10, -10]} decay={0} intensity={Math.PI} />
+    <>
+      <ambientLight intensity={1} />
+      <directionalLight position={[0, 1, 0]} intensity={2} />
       <GO_Table />
+      <mesh />
       {balls.map((ball, index) => (
         <GO_Ball
+          ref={(ref: never) => (ballsRefs.current[index] = ref)}
           key={index}
           index={index}
           position={ball.position}
@@ -71,8 +65,8 @@ export const EightBallGameScene = () => {
           textureUrl={ball.textureUrl}
         />
       ))}
-      <OrbitControls />
+      <OrbitControls target={[0, 1.42, 0]} />
       <Stats />
-    </Canvas>
+    </>
   );
 };

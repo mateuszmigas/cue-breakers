@@ -1,3 +1,4 @@
+import { Canvas } from "@react-three/fiber";
 import { Button } from "./components/ui/button";
 import { EightBallGameScene } from "./scenes/eightBallScene";
 
@@ -22,7 +23,16 @@ export const App = () => {
         <div className="absolute">
           <Button onClick={() => {}}>Toggle Light</Button>
         </div>
-        <EightBallGameScene />
+        <Canvas
+          fallback={<div>Sorry no WebGL supported!</div>}
+          className="size-full absolute"
+          camera={{ position: [5, 5, 5], fov: 45 }}
+        >
+          <EightBallGameScene />
+        </Canvas>
+        {/* {page === "home" && <HomePage></HomePage>} */}
+        {/* {page === "createRoom" && <CreateRoomPage></CreateRoomPage>} */}
+        {/* {page === "joinRoom" && <JoinRoomPage></JoinRoomPage>} */}
         {/* {page === "playMode" && <PlayModePage></PlayModePage>} */}
         {/* {page === "training" && <div>Training</div>} */}
       </div>
