@@ -1,31 +1,36 @@
+[config]
+default_to_workspace = false
+
 [tasks.dev-api]
-workspace = false
 command = "cargo"
 args = ["watch", "-x", "run", "-p", "api"]
 
 [tasks.dev-web]
 command = "pnpm"
-workspace = false
 args = ["--filter", "./apps/web", "run", "dev"]
 
 [tasks.dev]
 run_task = { name = ["dev-web", "dev-api"], parallel = true }
-workspace = false
 
 [tasks.build-physics-wasm]
-workspace = false
-command = "wasm-pack"
-args = ["build", "libs/physics", "--target", "web"]
+script = "wasm-pack build libs/physics --target web && cp libs/physics/pkg/*.{wasm,js,ts} apps/web/src/wasm/physics"
 
 [tasks.build-game-logic-wasm]
-workspace = false
-command = "wasm-pack"
-args = ["build", "libs/game-logic", "--target", "web"]
+script = "wasm-pack build libs/game-logic --target web && cp libs/game-logic/pkg/*.{wasm,js,ts} apps/web/src/wasm/game-logic"
 
 [tasks.build-wasm]
-workspace = false
 dependencies = ["build-physics-wasm", "build-game-logic-wasm"]
-script = '''
-cp libs/physics/pkg/*.{wasm,js,ts} apps/web/src/wasm/physics
-cp libs/game-logic/pkg/*.{wasm,js,ts} apps/web/src/wasm/game-logic
-'''
+
+[tasks.dev-physics-wasm]
+command = "cargo"
+args = ["watch", "-w", "libs/physics", "-x", "make build-physics-wasm"]
+
+[tasks.dev-game-logic-wasm]
+command = "cargo"
+args = ["watch", "-w", "libs/game-logic", "-x", "make build-game-logic-wasm"]
+
+[tasks.dev-wasm]
+run_task = { name = [
+    "dev-physics-wasm",
+    "dev-game-logic-wasm",
+], parallel = true }
