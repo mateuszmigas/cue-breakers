@@ -60,6 +60,12 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly add_floats: (a: number, b: number) => number;
+  readonly __wbg_sphere_free: (a: number) => void;
+  readonly sphere_new: (a: number, b: number, c: number) => number;
+  readonly __wbg_tableconfig_free: (a: number) => void;
+  readonly tableconfig_new: (a: number) => number;
+  readonly run_table_simulation: (a: number, b: number, c: number) => void;
   readonly __wbg_vector4f_free: (a: number) => void;
   readonly __wbg_get_vector4f_x: (a: number) => number;
   readonly __wbg_set_vector4f_x: (a: number, b: number) => void;
@@ -70,12 +76,6 @@ export interface InitOutput {
   readonly __wbg_get_vector4f_w: (a: number) => number;
   readonly __wbg_set_vector4f_w: (a: number, b: number) => void;
   readonly vector4f_new: (a: number, b: number, c: number, d: number) => number;
-  readonly add_floats: (a: number, b: number) => number;
-  readonly __wbg_sphere_free: (a: number) => void;
-  readonly sphere_new: (a: number, b: number, c: number) => number;
-  readonly __wbg_tableconfig_free: (a: number) => void;
-  readonly tableconfig_new: (a: number) => number;
-  readonly run_table_simulation: (a: number, b: number, c: number) => void;
   readonly __wbindgen_malloc: (a: number, b: number) => number;
 }
 
