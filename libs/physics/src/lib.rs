@@ -1,9 +1,10 @@
 use glam::Vec4;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
-pub fn add_floats(x: f32, y: f32) -> f32 {
-    x + y + 0.2
+macro_rules! js_log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
 }
 
 #[wasm_bindgen]
@@ -23,17 +24,44 @@ impl Vector4f {
 }
 
 #[wasm_bindgen]
-pub fn simd_add_vectors(v1: &Vector4f, v2: &Vector4f) -> Vector4f {
-    let mut v1s = Vec4::new(v1.x, v1.y, v1.z, v1.w);
-    let v2s = Vec4::new(v2.x, v2.y, v2.z, v2.w);
+pub fn add_floats(x: f32, y: f32) -> f32 {
+    x + y
+}
 
-    // let mut sum = Vec4::ZERO;
-    for _ in 0..1_000_000 {
-        // sum = v1s + v2s;
-        v1s += v2s;
+#[wasm_bindgen]
+pub struct Sphere {
+    id: u32,
+    position: Vector4f,
+    radius: f32,
+}
+
+#[wasm_bindgen]
+impl Sphere {
+    #[wasm_bindgen(constructor)]
+    pub fn new(id: u32, position: Vector4f, radius: f32) -> Self {
+        Sphere {
+            id,
+            position,
+            radius,
+        }
     }
+}
+#[wasm_bindgen]
+pub struct TableConfig {
+    height: f32,
+}
 
-    Vector4f::new(v1s.x, v1s.y, v1s.z, v1s.w)
+#[wasm_bindgen]
+impl TableConfig {
+    #[wasm_bindgen(constructor)]
+    pub fn new(height: f32) -> Self {
+        TableConfig { height }
+    }
+}
+
+#[wasm_bindgen]
+pub fn run_table_simulation(_spheres: Vec<Sphere>, _table_config: &TableConfig) {
+    js_log!("Running table simulation hehehehe");
 }
 
 // #[cfg(test)]

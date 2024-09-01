@@ -2,9 +2,15 @@ import { useFrame } from "@react-three/fiber";
 import { GO_Ball } from "./objects/ball";
 import { Stats, OrbitControls } from "@react-three/drei";
 import { GO_Table } from "./objects/table";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Mesh } from "three";
-import { add_floats } from "@/wasm/physics";
+import {
+  add_floats,
+  run_table_simulation,
+  Sphere,
+  TableConfig,
+  Vector4f,
+} from "@/wasm/physics";
 
 const constants = {
   edgeMinX: -2.731,
@@ -16,7 +22,7 @@ const constants = {
   height: 1.42,
 };
 
-const balls = Array.from({ length: 16 }, (_, i) => {
+const balls = Array.from({ length: 160 }, (_, i) => {
   return {
     type: "ball",
     position: {
@@ -29,12 +35,26 @@ const balls = Array.from({ length: 16 }, (_, i) => {
       y: Math.random(),
       z: Math.random(),
     },
-    textureUrl: `balls/ball_${i}.png`,
+    textureUrl: `balls/ball_${i % 16}.png`,
   };
 });
 
 export const EightBallGameScene = () => {
   const ballsRefs = useRef<Mesh[]>([]);
+
+  useEffect(() => {
+    const sphers = balls.map((ball, index) => {
+      return new Sphere(
+        index,
+        new Vector4f(ball.position.x, ball.position.y, ball.position.z, 0),
+        2
+      );
+    });
+
+    console.time("table_simulation");
+    run_table_simulation(sphers, new TableConfig(12));
+    console.timeEnd("table_simulation");
+  }, []);
 
   useFrame((_, delta) => {
     ballsRefs.current.forEach((ball) => {

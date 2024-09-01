@@ -25,7 +25,7 @@ export const GO_Ball = forwardRef(
         scale={0.15}
         rotation={[rotation.x, rotation.y, rotation.z]}
         // onClick={(e) => console.log("click")}
-        onUpdate={() => console.log("props have been updated")}
+        // onUpdate={() => console.log("props have been updated")}
       >
         <sphereGeometry args={[0.5, 32, 32]} />
         <meshPhongMaterial map={colorMap} specular={0xffffff} shininess={100} />
@@ -33,3 +33,4 @@ export const GO_Ball = forwardRef(
     );
   }
 );
+

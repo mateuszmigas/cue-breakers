@@ -7,11 +7,30 @@
 */
 export function add_floats(x: number, y: number): number;
 /**
-* @param {Vector4f} v1
-* @param {Vector4f} v2
-* @returns {Vector4f}
+* @param {(Sphere)[]} _spheres
+* @param {TableConfig} _table_config
 */
-export function simd_add_vectors(v1: Vector4f, v2: Vector4f): Vector4f;
+export function run_table_simulation(_spheres: (Sphere)[], _table_config: TableConfig): void;
+/**
+*/
+export class Sphere {
+  free(): void;
+/**
+* @param {number} id
+* @param {Vector4f} position
+* @param {number} radius
+*/
+  constructor(id: number, position: Vector4f, radius: number);
+}
+/**
+*/
+export class TableConfig {
+  free(): void;
+/**
+* @param {number} height
+*/
+  constructor(height: number);
+}
 /**
 */
 export class Vector4f {
@@ -41,7 +60,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly add_floats: (a: number, b: number) => number;
   readonly __wbg_vector4f_free: (a: number) => void;
   readonly __wbg_get_vector4f_x: (a: number) => number;
   readonly __wbg_set_vector4f_x: (a: number, b: number) => void;
@@ -52,7 +70,13 @@ export interface InitOutput {
   readonly __wbg_get_vector4f_w: (a: number) => number;
   readonly __wbg_set_vector4f_w: (a: number, b: number) => void;
   readonly vector4f_new: (a: number, b: number, c: number, d: number) => number;
-  readonly simd_add_vectors: (a: number, b: number) => number;
+  readonly add_floats: (a: number, b: number) => number;
+  readonly __wbg_sphere_free: (a: number) => void;
+  readonly sphere_new: (a: number, b: number, c: number) => number;
+  readonly __wbg_tableconfig_free: (a: number) => void;
+  readonly tableconfig_new: (a: number) => number;
+  readonly run_table_simulation: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_malloc: (a: number, b: number) => number;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
