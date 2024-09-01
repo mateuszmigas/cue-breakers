@@ -11,3 +11,21 @@ args = ["--filter", "./apps/web", "run", "dev"]
 [tasks.dev]
 run_task = { name = ["dev-web", "dev-api"], parallel = true }
 workspace = false
+
+[tasks.build-physics-wasm]
+workspace = false
+command = "wasm-pack"
+args = ["build", "libs/physics", "--target", "web"]
+
+[tasks.build-game-logic-wasm]
+workspace = false
+command = "wasm-pack"
+args = ["build", "libs/game-logic", "--target", "web"]
+
+[tasks.build-wasm]
+workspace = false
+dependencies = ["build-physics-wasm", "build-game-logic-wasm"]
+script = '''
+cp libs/physics/pkg/*.{wasm,js,ts} apps/web/src/wasm/physics
+cp libs/game-logic/pkg/*.{wasm,js,ts} apps/web/src/wasm/game-logic
+'''

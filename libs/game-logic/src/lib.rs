@@ -1,4 +1,5 @@
 use lib_physics;
+use wasm_bindgen::prelude::*;
 
 //game state
 
@@ -33,8 +34,10 @@ use lib_physics;
 //game events union
 
 //processEvent (event) -> game state
+
+#[wasm_bindgen]
 pub fn run_game(x: i32, y: i32) -> i32 {
-    lib_physics::add_vectors(x, y)
+    lib_physics::add_vectors(x, y) + 1
 }
 
 // #[cfg(test)]

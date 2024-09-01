@@ -24,9 +24,9 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@wasm/*": ["./src/wasm/*"]
     }
   },
   "include": ["src"]
 }
-
