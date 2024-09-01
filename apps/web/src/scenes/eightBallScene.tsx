@@ -4,14 +4,7 @@ import { Stats, OrbitControls } from "@react-three/drei";
 import { GO_Table } from "./objects/table";
 import { useRef } from "react";
 import { Mesh } from "three";
-import { add_vectors } from "@/wasm/physics";
-
-/*
-gamestate:
-  - game state: room
-  - local state vs saved state
-
-*/
+import { add_floats } from "@/wasm/physics";
 
 const constants = {
   edgeMinX: -2.731,
@@ -40,14 +33,13 @@ const balls = Array.from({ length: 16 }, (_, i) => {
   };
 });
 
-// console.log(add_vectors(1, 2));
 export const EightBallGameScene = () => {
   const ballsRefs = useRef<Mesh[]>([]);
 
   useFrame((_, delta) => {
     ballsRefs.current.forEach((ball) => {
-      ball.rotation.x = add_vectors(ball.rotation.x, delta);
-      ball.rotation.y = add_vectors(ball.rotation.y, delta);
+      ball.rotation.x = add_floats(ball.rotation.x, delta);
+      ball.rotation.y = add_floats(ball.rotation.y, delta);
     });
   });
 
@@ -72,3 +64,4 @@ export const EightBallGameScene = () => {
     </>
   );
 };
+

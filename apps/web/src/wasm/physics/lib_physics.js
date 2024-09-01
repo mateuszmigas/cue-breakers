@@ -1,13 +1,139 @@
 let wasm;
 
+const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
+
+if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
+
+let cachedUint8Memory0 = null;
+
+function getUint8Memory0() {
+    if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {
+        cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
+    }
+    return cachedUint8Memory0;
+}
+
+function getStringFromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+}
 /**
 * @param {number} x
 * @param {number} y
 * @returns {number}
 */
-export function add_vectors(x, y) {
-    const ret = wasm.add_vectors(x, y);
+export function add_floats(x, y) {
+    const ret = wasm.add_floats(x, y);
     return ret;
+}
+
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+    return instance.ptr;
+}
+/**
+* @param {Vector4f} v1
+* @param {Vector4f} v2
+* @returns {Vector4f}
+*/
+export function simd_add_vectors(v1, v2) {
+    _assertClass(v1, Vector4f);
+    _assertClass(v2, Vector4f);
+    const ret = wasm.simd_add_vectors(v1.__wbg_ptr, v2.__wbg_ptr);
+    return Vector4f.__wrap(ret);
+}
+
+const Vector4fFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_vector4f_free(ptr >>> 0));
+/**
+*/
+export class Vector4f {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(Vector4f.prototype);
+        obj.__wbg_ptr = ptr;
+        Vector4fFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        Vector4fFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_vector4f_free(ptr);
+    }
+    /**
+    * @returns {number}
+    */
+    get x() {
+        const ret = wasm.__wbg_get_vector4f_x(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set x(arg0) {
+        wasm.__wbg_set_vector4f_x(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get y() {
+        const ret = wasm.__wbg_get_vector4f_y(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set y(arg0) {
+        wasm.__wbg_set_vector4f_y(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get z() {
+        const ret = wasm.__wbg_get_vector4f_z(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set z(arg0) {
+        wasm.__wbg_set_vector4f_z(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get w() {
+        const ret = wasm.__wbg_get_vector4f_w(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set w(arg0) {
+        wasm.__wbg_set_vector4f_w(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @param {number} x
+    * @param {number} y
+    * @param {number} z
+    * @param {number} w
+    */
+    constructor(x, y, z, w) {
+        const ret = wasm.vector4f_new(x, y, z, w);
+        this.__wbg_ptr = ret >>> 0;
+        return this;
+    }
 }
 
 async function __wbg_load(module, imports) {
@@ -44,6 +170,9 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
+    imports.wbg.__wbindgen_throw = function(arg0, arg1) {
+        throw new Error(getStringFromWasm0(arg0, arg1));
+    };
 
     return imports;
 }
@@ -55,6 +184,7 @@ function __wbg_init_memory(imports, maybe_memory) {
 function __wbg_finalize_init(instance, module) {
     wasm = instance.exports;
     __wbg_init.__wbindgen_wasm_module = module;
+    cachedUint8Memory0 = null;
 
 
     return wasm;
