@@ -37,7 +37,7 @@ use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
 pub fn run_game(x: i32, y: i32) -> i32 {
-    lib_physics::add_vectors(x, y) + 1
+    x + y
 }
 
 // #[cfg(test)]

@@ -1,7 +1,7 @@
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
-pub fn add_vectors(x: i32, y: i32) -> i32 {
+pub fn add_vectors(x: f32, y: f32) -> f32 {
     x + y
 }
 
@@ -11,7 +11,7 @@ pub fn add_vectors(x: i32, y: i32) -> i32 {
 
 //     #[test]
 //     fn it_works() {
-//         let result = add_vectors(2, 2);
-//         assert_eq!(result, 4);
+//         let result = add_vectors(2.0, 2.0);
+//         assert_eq!(result, 4.0);
 //     }
 // }
