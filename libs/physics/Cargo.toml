@@ -8,7 +8,6 @@ description = "Physics library"
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
-lib-contracts = { path = "../contracts" }
 glam = "0.29.0"
 wasm-bindgen = "0.2.92"
 
