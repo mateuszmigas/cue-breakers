@@ -2,10 +2,9 @@ import { useFrame } from "@react-three/fiber";
 import { GO_Ball } from "./objects/ball";
 import { Stats, OrbitControls } from "@react-three/drei";
 import { GO_Table } from "./objects/table";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { Mesh } from "three";
 import {
-  add_floats,
   run_table_simulation,
   Sphere,
   TableConfig,
@@ -42,26 +41,37 @@ const balls = Array.from({ length: 160 }, (_, i) => {
 export const EightBallGameScene = () => {
   const ballsRefs = useRef<Mesh[]>([]);
 
-  useEffect(() => {
-    const sphers = balls.map((ball, index) => {
+  useFrame((_, delta) => {
+    const xx = balls.map((ball) => {
       return new Sphere(
-        index,
-        new Vector4f(ball.position.x, ball.position.y, ball.position.z, 0),
-        2
+        1,
+        new Vector4f(ball.position.x, ball.position.y, ball.position.z, 0.05),
+        new Vector4f(ball.rotation.x, ball.rotation.y, ball.rotation.z, 0.05),
+        1
       );
     });
+    const result = run_table_simulation(xx, new TableConfig(12), delta);
 
-    console.time("table_simulation");
-    run_table_simulation(sphers, new TableConfig(12));
-    console.timeEnd("table_simulation");
-  }, []);
-
-  useFrame((_, delta) => {
-    ballsRefs.current.forEach((ball) => {
-      ball.rotation.x = add_floats(ball.rotation.x, delta);
-      ball.rotation.y = add_floats(ball.rotation.y, delta);
+    for (let i = 0; i < result.length; i++) {
+      balls[i].position.x = result[i].position.x;
+      balls[i].position.y = result[i].position.y;
+      balls[i].position.z = result[i].position.z;
+      balls[i].rotation.x = result[i].rotation.x;
+      balls[i].rotation.y = result[i].rotation.y;
+      balls[i].rotation.z = result[i].rotation.z;
+    }
+    balls.forEach((ball, index) => {
+      if (ballsRefs.current[index]) {
+        ballsRefs.current[index].position.x = ball.position.x;
+        ballsRefs.current[index].position.y = ball.position.y;
+        ballsRefs.current[index].position.z = ball.position.z;
+        ballsRefs.current[index].rotation.x = ball.rotation.x;
+        ballsRefs.current[index].rotation.y = ball.rotation.y;
+        ballsRefs.current[index].rotation.z = ball.rotation.z;
+      }
     });
   });
+  // });
 
   return (
     <>
@@ -84,4 +94,3 @@ export const EightBallGameScene = () => {
     </>
   );
 };
-

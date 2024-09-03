@@ -8,6 +8,7 @@ macro_rules! js_log {
 }
 
 #[wasm_bindgen]
+#[derive(Copy, Clone)]
 pub struct Vector4f {
     pub x: f32,
     pub y: f32,
@@ -29,19 +30,22 @@ pub fn add_floats(x: f32, y: f32) -> f32 {
 }
 
 #[wasm_bindgen]
+#[derive(Copy, Clone)]
 pub struct Sphere {
-    id: u32,
-    position: Vector4f,
-    radius: f32,
+    pub id: u32,
+    pub position: Vector4f,
+    pub rotation: Vector4f,
+    pub radius: f32,
 }
 
 #[wasm_bindgen]
 impl Sphere {
     #[wasm_bindgen(constructor)]
-    pub fn new(id: u32, position: Vector4f, radius: f32) -> Self {
+    pub fn new(id: u32, position: Vector4f, rotation: Vector4f, radius: f32) -> Self {
         Sphere {
             id,
             position,
+            rotation,
             radius,
         }
     }
@@ -60,8 +64,21 @@ impl TableConfig {
 }
 
 #[wasm_bindgen]
-pub fn run_table_simulation(_spheres: Vec<Sphere>, _table_config: &TableConfig) {
-    js_log!("Running table simulation hehehehe");
+pub fn run_table_simulation(
+    spheres: Vec<Sphere>,
+    table_config: &TableConfig,
+    delta_time: f32,
+) -> Vec<Sphere> {
+    spheres
+        .into_iter()
+        .map(|mut sphere| {
+            // Rotate the sphere
+            sphere.rotation.x += delta_time;
+            sphere.rotation.y += delta_time;
+            sphere.rotation.z += delta_time;
+            sphere
+        })
+        .collect()
 }
 
 // #[cfg(test)]
