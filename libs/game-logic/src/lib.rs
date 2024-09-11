@@ -1,4 +1,4 @@
-use lib_physics;
+use lib_physics::{self, Vector4f};
 use wasm_bindgen::prelude::*;
 
 macro_rules! js_log {
@@ -8,8 +8,11 @@ macro_rules! js_log {
 }
 
 #[wasm_bindgen]
-struct GameObject {
-    id: u32,
+#[repr(C)]
+pub struct GameObject {
+    pub instance_id: u32,
+    pub type_id: u32,
+    pub transform: Vector4f,
 }
 
 #[wasm_bindgen]
@@ -35,8 +38,24 @@ impl GameSession {
         // }
     }
 
-    pub fn add_object(&mut self, id: u32) {
-        self.objects.push(GameObject { id });
+    pub fn add_object(&mut self, instance_id: u32, type_id: u32) {
+        self.objects.push(GameObject {
+            instance_id,
+            type_id,
+            transform: Vector4f::new(1.0, 2.0, 3.0, 4.0),
+        });
+    }
+
+    pub fn get_objects_ids(&self) -> Vec<u32> {
+        self.objects.iter().map(|obj| obj.instance_id).collect()
+    }
+
+    pub fn get_objects_ptr(&self) -> *const GameObject {
+        self.objects.as_ptr()
+    }
+
+    pub fn get_objects_count(&self) -> usize {
+        self.objects.len()
     }
 }
 
@@ -73,11 +92,6 @@ impl GameSession {
 //game events union
 
 //processEvent (event) -> game state
-
-#[wasm_bindgen]
-pub fn run_game(x: i32, y: i32) -> i32 {
-    x + y
-}
 
 // #[cfg(test)]
 // mod tests {

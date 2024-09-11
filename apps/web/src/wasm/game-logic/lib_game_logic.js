@@ -37,16 +37,36 @@ function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
 }
-/**
-* @param {number} x
-* @param {number} y
-* @returns {number}
-*/
-export function run_game(x, y) {
-    const ret = wasm.run_game(x, y);
-    return ret;
+
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+    return instance.ptr;
 }
 
+let cachedInt32Memory0 = null;
+
+function getInt32Memory0() {
+    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
+        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
+    }
+    return cachedInt32Memory0;
+}
+
+let cachedUint32Memory0 = null;
+
+function getUint32Memory0() {
+    if (cachedUint32Memory0 === null || cachedUint32Memory0.byteLength === 0) {
+        cachedUint32Memory0 = new Uint32Array(wasm.memory.buffer);
+    }
+    return cachedUint32Memory0;
+}
+
+function getArrayU32FromWasm0(ptr, len) {
+    ptr = ptr >>> 0;
+    return getUint32Memory0().subarray(ptr / 4, ptr / 4 + len);
+}
 /**
 * @param {number} x
 * @param {number} y
@@ -57,13 +77,6 @@ export function add_floats(x, y) {
     return ret;
 }
 
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
-    }
-    return instance.ptr;
-}
-
 function addHeapObject(obj) {
     if (heap_next === heap.length) heap.push(heap.length + 1);
     const idx = heap_next;
@@ -71,15 +84,6 @@ function addHeapObject(obj) {
 
     heap[idx] = obj;
     return idx;
-}
-
-let cachedUint32Memory0 = null;
-
-function getUint32Memory0() {
-    if (cachedUint32Memory0 === null || cachedUint32Memory0.byteLength === 0) {
-        cachedUint32Memory0 = new Uint32Array(wasm.memory.buffer);
-    }
-    return cachedUint32Memory0;
 }
 
 let WASM_VECTOR_LEN = 0;
@@ -92,15 +96,6 @@ function passArrayJsValueToWasm0(array, malloc) {
     }
     WASM_VECTOR_LEN = array.length;
     return ptr;
-}
-
-let cachedInt32Memory0 = null;
-
-function getInt32Memory0() {
-    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
-        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
-    }
-    return cachedInt32Memory0;
 }
 
 function getArrayJsValueFromWasm0(ptr, len) {
@@ -158,6 +153,47 @@ export class GameObject {
         const ptr = this.__destroy_into_raw();
         wasm.__wbg_gameobject_free(ptr);
     }
+    /**
+    * @returns {number}
+    */
+    get instance_id() {
+        const ret = wasm.__wbg_get_gameobject_instance_id(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set instance_id(arg0) {
+        wasm.__wbg_set_gameobject_instance_id(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {number}
+    */
+    get type_id() {
+        const ret = wasm.__wbg_get_gameobject_type_id(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set type_id(arg0) {
+        wasm.__wbg_set_gameobject_type_id(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {Vector4f}
+    */
+    get transform() {
+        const ret = wasm.__wbg_get_gameobject_transform(this.__wbg_ptr);
+        return Vector4f.__wrap(ret);
+    }
+    /**
+    * @param {Vector4f} arg0
+    */
+    set transform(arg0) {
+        _assertClass(arg0, Vector4f);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_gameobject_transform(this.__wbg_ptr, ptr0);
+    }
 }
 
 const GameSessionFinalization = (typeof FinalizationRegistry === 'undefined')
@@ -201,10 +237,41 @@ export class GameSession {
         wasm.gamesession_update(this.__wbg_ptr, delta_time);
     }
     /**
-    * @param {number} id
+    * @param {number} instance_id
+    * @param {number} type_id
     */
-    add_object(id) {
-        wasm.gamesession_add_object(this.__wbg_ptr, id);
+    add_object(instance_id, type_id) {
+        wasm.gamesession_add_object(this.__wbg_ptr, instance_id, type_id);
+    }
+    /**
+    * @returns {Uint32Array}
+    */
+    get_objects_ids() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.gamesession_get_objects_ids(retptr, this.__wbg_ptr);
+            var r0 = getInt32Memory0()[retptr / 4 + 0];
+            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var v1 = getArrayU32FromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 4, 4);
+            return v1;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {number}
+    */
+    get_objects_ptr() {
+        const ret = wasm.gamesession_get_objects_ptr(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @returns {number}
+    */
+    get_objects_count() {
+        const ret = wasm.gamesession_get_objects_count(this.__wbg_ptr);
+        return ret >>> 0;
     }
 }
 

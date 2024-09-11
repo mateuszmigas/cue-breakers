@@ -9,6 +9,7 @@ macro_rules! js_log {
 
 #[wasm_bindgen]
 #[derive(Copy, Clone)]
+#[repr(C)]
 pub struct Vector4f {
     pub x: f32,
     pub y: f32,

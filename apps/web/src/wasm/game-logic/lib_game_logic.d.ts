@@ -5,12 +5,6 @@
 * @param {number} y
 * @returns {number}
 */
-export function run_game(x: number, y: number): number;
-/**
-* @param {number} x
-* @param {number} y
-* @returns {number}
-*/
 export function add_floats(x: number, y: number): number;
 /**
 * @param {(Sphere)[]} spheres
@@ -28,6 +22,15 @@ export enum GameType {
 */
 export class GameObject {
   free(): void;
+/**
+*/
+  instance_id: number;
+/**
+*/
+  transform: Vector4f;
+/**
+*/
+  type_id: number;
 }
 /**
 */
@@ -43,9 +46,22 @@ export class GameSession {
 */
   update(delta_time: number): void;
 /**
-* @param {number} id
+* @param {number} instance_id
+* @param {number} type_id
 */
-  add_object(id: number): void;
+  add_object(instance_id: number, type_id: number): void;
+/**
+* @returns {Uint32Array}
+*/
+  get_objects_ids(): Uint32Array;
+/**
+* @returns {number}
+*/
+  get_objects_ptr(): number;
+/**
+* @returns {number}
+*/
+  get_objects_count(): number;
 }
 /**
 */
@@ -110,11 +126,19 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly __wbg_gameobject_free: (a: number) => void;
+  readonly __wbg_get_gameobject_instance_id: (a: number) => number;
+  readonly __wbg_set_gameobject_instance_id: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_type_id: (a: number) => number;
+  readonly __wbg_set_gameobject_type_id: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_transform: (a: number) => number;
+  readonly __wbg_set_gameobject_transform: (a: number, b: number) => void;
   readonly __wbg_gamesession_free: (a: number) => void;
   readonly gamesession_new: (a: number) => number;
   readonly gamesession_update: (a: number, b: number) => void;
-  readonly gamesession_add_object: (a: number, b: number) => void;
-  readonly run_game: (a: number, b: number) => number;
+  readonly gamesession_add_object: (a: number, b: number, c: number) => void;
+  readonly gamesession_get_objects_ids: (a: number, b: number) => void;
+  readonly gamesession_get_objects_ptr: (a: number) => number;
+  readonly gamesession_get_objects_count: (a: number) => number;
   readonly __wbg_vector4f_free: (a: number) => void;
   readonly __wbg_get_vector4f_x: (a: number) => number;
   readonly __wbg_set_vector4f_x: (a: number, b: number) => void;
@@ -140,8 +164,8 @@ export interface InitOutput {
   readonly tableconfig_new: (a: number) => number;
   readonly run_table_simulation: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
-  readonly __wbindgen_malloc: (a: number, b: number) => number;
   readonly __wbindgen_free: (a: number, b: number, c: number) => void;
+  readonly __wbindgen_malloc: (a: number, b: number) => number;
 }
 
 export type SyncInitInput = BufferSource | WebAssembly.Module;
