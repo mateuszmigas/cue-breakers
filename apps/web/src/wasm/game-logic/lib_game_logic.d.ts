@@ -21,6 +21,34 @@ export function add_floats(x: number, y: number): number;
 export function run_table_simulation(spheres: (Sphere)[], table_config: TableConfig, delta_time: number): (Sphere)[];
 /**
 */
+export enum GameType {
+  EightBall = 0,
+}
+/**
+*/
+export class GameObject {
+  free(): void;
+}
+/**
+*/
+export class GameSession {
+  free(): void;
+/**
+* @param {number} game_type
+* @returns {GameSession}
+*/
+  static new(game_type: number): GameSession;
+/**
+* @param {number} delta_time
+*/
+  update(delta_time: number): void;
+/**
+* @param {number} id
+*/
+  add_object(id: number): void;
+}
+/**
+*/
 export class Sphere {
   free(): void;
 /**
@@ -81,6 +109,11 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly __wbg_gameobject_free: (a: number) => void;
+  readonly __wbg_gamesession_free: (a: number) => void;
+  readonly gamesession_new: (a: number) => number;
+  readonly gamesession_update: (a: number, b: number) => void;
+  readonly gamesession_add_object: (a: number, b: number) => void;
   readonly run_game: (a: number, b: number) => number;
   readonly __wbg_vector4f_free: (a: number) => void;
   readonly __wbg_get_vector4f_x: (a: number) => number;

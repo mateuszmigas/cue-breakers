@@ -1,1 +1,1 @@
-export { useSignalServer } from "./useSignalServer";
+export { useGameSession } from "./useGameSession";

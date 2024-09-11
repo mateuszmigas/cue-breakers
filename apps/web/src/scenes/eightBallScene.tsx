@@ -2,7 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import { GO_Ball } from "./objects/ball";
 import { Stats, OrbitControls } from "@react-three/drei";
 import { GO_Table } from "./objects/table";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import { Mesh } from "three";
 import {
   run_table_simulation,
@@ -10,6 +10,8 @@ import {
   TableConfig,
   Vector4f,
 } from "@/wasm/physics";
+import { GameType } from "@/wasm/game-logic";
+import { useGameSession } from "@/hooks";
 
 const constants = {
   edgeMinX: -2.731,
@@ -38,10 +40,16 @@ const balls = Array.from({ length: 160 }, (_, i) => {
   };
 });
 
-export const EightBallGameScene = () => {
+export const EightBallGameScene = memo(() => {
   const ballsRefs = useRef<Mesh[]>([]);
+  const gameSessionRef = useGameSession(GameType.EightBall);
 
   useFrame((_, delta) => {
+    if (!gameSessionRef.current) return;
+
+    gameSessionRef.current.update(delta);
+
+    // console.log(gameSessionRef.current.get_objects());
     const xx = balls.map((ball) => {
       return new Sphere(
         1,
@@ -93,4 +101,4 @@ export const EightBallGameScene = () => {
       <Stats />
     </>
   );
-};
+});

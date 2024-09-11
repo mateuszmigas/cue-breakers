@@ -1,6 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function __wbg_gameobject_free(a: number): void;
+export function __wbg_gamesession_free(a: number): void;
+export function gamesession_new(a: number): number;
+export function gamesession_update(a: number, b: number): void;
+export function gamesession_add_object(a: number, b: number): void;
 export function run_game(a: number, b: number): number;
 export function __wbg_vector4f_free(a: number): void;
 export function __wbg_get_vector4f_x(a: number): number;

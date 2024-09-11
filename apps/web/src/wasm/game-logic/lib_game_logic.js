@@ -136,6 +136,78 @@ export function run_table_simulation(spheres, table_config, delta_time) {
     }
 }
 
+/**
+*/
+export const GameType = Object.freeze({ EightBall:0,"0":"EightBall", });
+
+const GameObjectFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_gameobject_free(ptr >>> 0));
+/**
+*/
+export class GameObject {
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        GameObjectFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_gameobject_free(ptr);
+    }
+}
+
+const GameSessionFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_gamesession_free(ptr >>> 0));
+/**
+*/
+export class GameSession {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(GameSession.prototype);
+        obj.__wbg_ptr = ptr;
+        GameSessionFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        GameSessionFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_gamesession_free(ptr);
+    }
+    /**
+    * @param {number} game_type
+    * @returns {GameSession}
+    */
+    static new(game_type) {
+        const ret = wasm.gamesession_new(game_type);
+        return GameSession.__wrap(ret);
+    }
+    /**
+    * @param {number} delta_time
+    */
+    update(delta_time) {
+        wasm.gamesession_update(this.__wbg_ptr, delta_time);
+    }
+    /**
+    * @param {number} id
+    */
+    add_object(id) {
+        wasm.gamesession_add_object(this.__wbg_ptr, id);
+    }
+}
+
 const SphereFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_sphere_free(ptr >>> 0));
@@ -398,9 +470,6 @@ function __wbg_get_imports() {
     imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
         takeObject(arg0);
     };
-    imports.wbg.__wbindgen_throw = function(arg0, arg1) {
-        throw new Error(getStringFromWasm0(arg0, arg1));
-    };
     imports.wbg.__wbg_sphere_new = function(arg0) {
         const ret = Sphere.__wrap(arg0);
         return addHeapObject(ret);
@@ -408,6 +477,9 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_sphere_unwrap = function(arg0) {
         const ret = Sphere.__unwrap(takeObject(arg0));
         return ret;
+    };
+    imports.wbg.__wbindgen_throw = function(arg0, arg1) {
+        throw new Error(getStringFromWasm0(arg0, arg1));
     };
 
     return imports;

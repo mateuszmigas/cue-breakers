@@ -28,7 +28,7 @@ export const App = () => {
           className="size-full absolute"
           camera={{ position: [5, 5, 5], fov: 45 }}
         >
-          <EightBallGameScene />
+          <EightBallGameScene key="1" />
         </Canvas>
         {/* {page === "home" && <HomePage></HomePage>} */}
         {/* {page === "createRoom" && <CreateRoomPage></CreateRoomPage>} */}
