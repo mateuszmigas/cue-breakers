@@ -9,11 +9,12 @@ export const GO_Ball = forwardRef(
       index: number;
       position: Vector3;
       rotation: Vector3;
+      scale: number;
       textureUrl: string;
     },
     ref: React.Ref<Mesh>
   ) => {
-    const { position, rotation, textureUrl } = props;
+    const { position, rotation, scale, textureUrl } = props;
     const colorMap = useLoader(TextureLoader, textureUrl);
     const innerRef = useRef<Mesh>(null);
     useImperativeHandle(ref, () => innerRef.current!, []);
@@ -22,7 +23,7 @@ export const GO_Ball = forwardRef(
       <mesh
         ref={innerRef}
         position={[position.x, position.y, position.z]}
-        scale={0.15}
+        scale={scale}
         rotation={[rotation.x, rotation.y, rotation.z]}
         // onClick={(e) => console.log("click")}
         // onUpdate={() => console.log("props have been updated")}
@@ -33,4 +34,3 @@ export const GO_Ball = forwardRef(
     );
   }
 );
-

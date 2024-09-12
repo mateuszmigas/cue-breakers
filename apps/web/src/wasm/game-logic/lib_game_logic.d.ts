@@ -27,7 +27,13 @@ export class GameObject {
   instance_id: number;
 /**
 */
-  transform: Vector4f;
+  position: Vector4f;
+/**
+*/
+  rotation: Vector4f;
+/**
+*/
+  scale: number;
 /**
 */
   type_id: number;
@@ -37,19 +43,14 @@ export class GameObject {
 export class GameSession {
   free(): void;
 /**
-* @param {number} game_type
+* @param {GameType} _game_type
 * @returns {GameSession}
 */
-  static new(game_type: number): GameSession;
+  static new(_game_type: GameType): GameSession;
 /**
 * @param {number} delta_time
 */
   update(delta_time: number): void;
-/**
-* @param {number} instance_id
-* @param {number} type_id
-*/
-  add_object(instance_id: number, type_id: number): void;
 /**
 * @returns {Uint32Array}
 */
@@ -125,21 +126,24 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_gameobject_free: (a: number) => void;
+  readonly __wbg_gameobject_free: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_instance_id: (a: number) => number;
   readonly __wbg_set_gameobject_instance_id: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_type_id: (a: number) => number;
   readonly __wbg_set_gameobject_type_id: (a: number, b: number) => void;
-  readonly __wbg_get_gameobject_transform: (a: number) => number;
-  readonly __wbg_set_gameobject_transform: (a: number, b: number) => void;
-  readonly __wbg_gamesession_free: (a: number) => void;
+  readonly __wbg_get_gameobject_position: (a: number) => number;
+  readonly __wbg_set_gameobject_position: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_rotation: (a: number) => number;
+  readonly __wbg_set_gameobject_rotation: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_scale: (a: number) => number;
+  readonly __wbg_set_gameobject_scale: (a: number, b: number) => void;
+  readonly __wbg_gamesession_free: (a: number, b: number) => void;
   readonly gamesession_new: (a: number) => number;
   readonly gamesession_update: (a: number, b: number) => void;
-  readonly gamesession_add_object: (a: number, b: number, c: number) => void;
   readonly gamesession_get_objects_ids: (a: number, b: number) => void;
   readonly gamesession_get_objects_ptr: (a: number) => number;
   readonly gamesession_get_objects_count: (a: number) => number;
-  readonly __wbg_vector4f_free: (a: number) => void;
+  readonly __wbg_vector4f_free: (a: number, b: number) => void;
   readonly __wbg_get_vector4f_x: (a: number) => number;
   readonly __wbg_set_vector4f_x: (a: number, b: number) => void;
   readonly __wbg_get_vector4f_y: (a: number) => number;
@@ -150,7 +154,7 @@ export interface InitOutput {
   readonly __wbg_set_vector4f_w: (a: number, b: number) => void;
   readonly vector4f_new: (a: number, b: number, c: number, d: number) => number;
   readonly add_floats: (a: number, b: number) => number;
-  readonly __wbg_sphere_free: (a: number) => void;
+  readonly __wbg_sphere_free: (a: number, b: number) => void;
   readonly __wbg_get_sphere_id: (a: number) => number;
   readonly __wbg_set_sphere_id: (a: number, b: number) => void;
   readonly __wbg_get_sphere_position: (a: number) => number;
@@ -160,7 +164,7 @@ export interface InitOutput {
   readonly __wbg_get_sphere_radius: (a: number) => number;
   readonly __wbg_set_sphere_radius: (a: number, b: number) => void;
   readonly sphere_new: (a: number, b: number, c: number, d: number) => number;
-  readonly __wbg_tableconfig_free: (a: number) => void;
+  readonly __wbg_tableconfig_free: (a: number, b: number) => void;
   readonly tableconfig_new: (a: number) => number;
   readonly run_table_simulation: (a: number, b: number, c: number, d: number, e: number) => void;
   readonly __wbindgen_add_to_stack_pointer: (a: number) => number;
@@ -173,18 +177,18 @@ export type SyncInitInput = BufferSource | WebAssembly.Module;
 * Instantiates the given `module`, which can either be bytes or
 * a precompiled `WebAssembly.Module`.
 *
-* @param {SyncInitInput} module
+* @param {{ module: SyncInitInput }} module - Passing `SyncInitInput` directly is deprecated.
 *
 * @returns {InitOutput}
 */
-export function initSync(module: SyncInitInput): InitOutput;
+export function initSync(module: { module: SyncInitInput } | SyncInitInput): InitOutput;
 
 /**
 * If `module_or_path` is {RequestInfo} or {URL}, makes a request and
 * for everything else, calls `WebAssembly.instantiate` directly.
 *
-* @param {InitInput | Promise<InitInput>} module_or_path
+* @param {{ module_or_path: InitInput | Promise<InitInput> }} module_or_path - Passing `InitInput` directly is deprecated.
 *
 * @returns {Promise<InitOutput>}
 */
-export default function __wbg_init (module_or_path?: InitInput | Promise<InitInput>): Promise<InitOutput>;
+export default function __wbg_init (module_or_path?: { module_or_path: InitInput | Promise<InitInput> } | InitInput | Promise<InitInput>): Promise<InitOutput>;

@@ -15,10 +15,6 @@ export const useGameSession = (
     init_game_logic(game_logic_url).then((initOutput) => {
       setGameSessionMemory(initOutput.memory);
       const gameSessionInstance = GameSession.new(gameType);
-      for (let i = 0; i < 1000; i++) {
-        gameSessionInstance.add_object(i, i + 1);
-        // gameSessionInstance.add_object(2, 4);
-      }
       setGameSessionInstance(gameSessionInstance);
     });
     return () => {

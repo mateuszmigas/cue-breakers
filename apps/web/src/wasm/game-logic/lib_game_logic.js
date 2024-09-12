@@ -24,18 +24,18 @@ const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder(
 
 if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
 
-let cachedUint8Memory0 = null;
+let cachedUint8ArrayMemory0 = null;
 
-function getUint8Memory0() {
-    if (cachedUint8Memory0 === null || cachedUint8Memory0.byteLength === 0) {
-        cachedUint8Memory0 = new Uint8Array(wasm.memory.buffer);
+function getUint8ArrayMemory0() {
+    if (cachedUint8ArrayMemory0 === null || cachedUint8ArrayMemory0.byteLength === 0) {
+        cachedUint8ArrayMemory0 = new Uint8Array(wasm.memory.buffer);
     }
-    return cachedUint8Memory0;
+    return cachedUint8ArrayMemory0;
 }
 
 function getStringFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
-    return cachedTextDecoder.decode(getUint8Memory0().subarray(ptr, ptr + len));
+    return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
 function _assertClass(instance, klass) {
@@ -45,27 +45,27 @@ function _assertClass(instance, klass) {
     return instance.ptr;
 }
 
-let cachedInt32Memory0 = null;
+let cachedDataViewMemory0 = null;
 
-function getInt32Memory0() {
-    if (cachedInt32Memory0 === null || cachedInt32Memory0.byteLength === 0) {
-        cachedInt32Memory0 = new Int32Array(wasm.memory.buffer);
+function getDataViewMemory0() {
+    if (cachedDataViewMemory0 === null || cachedDataViewMemory0.buffer.detached === true || (cachedDataViewMemory0.buffer.detached === undefined && cachedDataViewMemory0.buffer !== wasm.memory.buffer)) {
+        cachedDataViewMemory0 = new DataView(wasm.memory.buffer);
     }
-    return cachedInt32Memory0;
+    return cachedDataViewMemory0;
 }
 
-let cachedUint32Memory0 = null;
+let cachedUint32ArrayMemory0 = null;
 
-function getUint32Memory0() {
-    if (cachedUint32Memory0 === null || cachedUint32Memory0.byteLength === 0) {
-        cachedUint32Memory0 = new Uint32Array(wasm.memory.buffer);
+function getUint32ArrayMemory0() {
+    if (cachedUint32ArrayMemory0 === null || cachedUint32ArrayMemory0.byteLength === 0) {
+        cachedUint32ArrayMemory0 = new Uint32Array(wasm.memory.buffer);
     }
-    return cachedUint32Memory0;
+    return cachedUint32ArrayMemory0;
 }
 
 function getArrayU32FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
-    return getUint32Memory0().subarray(ptr / 4, ptr / 4 + len);
+    return getUint32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
 }
 /**
 * @param {number} x
@@ -90,9 +90,9 @@ let WASM_VECTOR_LEN = 0;
 
 function passArrayJsValueToWasm0(array, malloc) {
     const ptr = malloc(array.length * 4, 4) >>> 0;
-    const mem = getUint32Memory0();
+    const mem = getDataViewMemory0();
     for (let i = 0; i < array.length; i++) {
-        mem[ptr / 4 + i] = addHeapObject(array[i]);
+        mem.setUint32(ptr + 4 * i, addHeapObject(array[i]), true);
     }
     WASM_VECTOR_LEN = array.length;
     return ptr;
@@ -100,11 +100,10 @@ function passArrayJsValueToWasm0(array, malloc) {
 
 function getArrayJsValueFromWasm0(ptr, len) {
     ptr = ptr >>> 0;
-    const mem = getUint32Memory0();
-    const slice = mem.subarray(ptr / 4, ptr / 4 + len);
+    const mem = getDataViewMemory0();
     const result = [];
-    for (let i = 0; i < slice.length; i++) {
-        result.push(takeObject(slice[i]));
+    for (let i = ptr; i < ptr + 4 * len; i += 4) {
+        result.push(takeObject(mem.getUint32(i, true)));
     }
     return result;
 }
@@ -121,8 +120,8 @@ export function run_table_simulation(spheres, table_config, delta_time) {
         const len0 = WASM_VECTOR_LEN;
         _assertClass(table_config, TableConfig);
         wasm.run_table_simulation(retptr, ptr0, len0, table_config.__wbg_ptr, delta_time);
-        var r0 = getInt32Memory0()[retptr / 4 + 0];
-        var r1 = getInt32Memory0()[retptr / 4 + 1];
+        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
         var v2 = getArrayJsValueFromWasm0(r0, r1).slice();
         wasm.__wbindgen_free(r0, r1 * 4, 4);
         return v2;
@@ -131,13 +130,14 @@ export function run_table_simulation(spheres, table_config, delta_time) {
     }
 }
 
+function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
 /**
 */
 export const GameType = Object.freeze({ EightBall:0,"0":"EightBall", });
 
 const GameObjectFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_gameobject_free(ptr >>> 0));
+    : new FinalizationRegistry(ptr => wasm.__wbg_gameobject_free(ptr >>> 0, 1));
 /**
 */
 export class GameObject {
@@ -151,7 +151,7 @@ export class GameObject {
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_gameobject_free(ptr);
+        wasm.__wbg_gameobject_free(ptr, 0);
     }
     /**
     * @returns {number}
@@ -182,23 +182,51 @@ export class GameObject {
     /**
     * @returns {Vector4f}
     */
-    get transform() {
-        const ret = wasm.__wbg_get_gameobject_transform(this.__wbg_ptr);
+    get position() {
+        const ret = wasm.__wbg_get_gameobject_position(this.__wbg_ptr);
         return Vector4f.__wrap(ret);
     }
     /**
     * @param {Vector4f} arg0
     */
-    set transform(arg0) {
+    set position(arg0) {
         _assertClass(arg0, Vector4f);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_gameobject_transform(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_gameobject_position(this.__wbg_ptr, ptr0);
+    }
+    /**
+    * @returns {Vector4f}
+    */
+    get rotation() {
+        const ret = wasm.__wbg_get_gameobject_rotation(this.__wbg_ptr);
+        return Vector4f.__wrap(ret);
+    }
+    /**
+    * @param {Vector4f} arg0
+    */
+    set rotation(arg0) {
+        _assertClass(arg0, Vector4f);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_gameobject_rotation(this.__wbg_ptr, ptr0);
+    }
+    /**
+    * @returns {number}
+    */
+    get scale() {
+        const ret = wasm.__wbg_get_gameobject_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set scale(arg0) {
+        wasm.__wbg_set_gameobject_scale(this.__wbg_ptr, arg0);
     }
 }
 
 const GameSessionFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_gamesession_free(ptr >>> 0));
+    : new FinalizationRegistry(ptr => wasm.__wbg_gamesession_free(ptr >>> 0, 1));
 /**
 */
 export class GameSession {
@@ -220,14 +248,14 @@ export class GameSession {
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_gamesession_free(ptr);
+        wasm.__wbg_gamesession_free(ptr, 0);
     }
     /**
-    * @param {number} game_type
+    * @param {GameType} _game_type
     * @returns {GameSession}
     */
-    static new(game_type) {
-        const ret = wasm.gamesession_new(game_type);
+    static new(_game_type) {
+        const ret = wasm.gamesession_new(_game_type);
         return GameSession.__wrap(ret);
     }
     /**
@@ -237,21 +265,14 @@ export class GameSession {
         wasm.gamesession_update(this.__wbg_ptr, delta_time);
     }
     /**
-    * @param {number} instance_id
-    * @param {number} type_id
-    */
-    add_object(instance_id, type_id) {
-        wasm.gamesession_add_object(this.__wbg_ptr, instance_id, type_id);
-    }
-    /**
     * @returns {Uint32Array}
     */
     get_objects_ids() {
         try {
             const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
             wasm.gamesession_get_objects_ids(retptr, this.__wbg_ptr);
-            var r0 = getInt32Memory0()[retptr / 4 + 0];
-            var r1 = getInt32Memory0()[retptr / 4 + 1];
+            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
             var v1 = getArrayU32FromWasm0(r0, r1).slice();
             wasm.__wbindgen_free(r0, r1 * 4, 4);
             return v1;
@@ -277,7 +298,7 @@ export class GameSession {
 
 const SphereFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_sphere_free(ptr >>> 0));
+    : new FinalizationRegistry(ptr => wasm.__wbg_sphere_free(ptr >>> 0, 1));
 /**
 */
 export class Sphere {
@@ -306,7 +327,7 @@ export class Sphere {
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_sphere_free(ptr);
+        wasm.__wbg_sphere_free(ptr, 0);
     }
     /**
     * @returns {number}
@@ -377,13 +398,14 @@ export class Sphere {
         var ptr1 = rotation.__destroy_into_raw();
         const ret = wasm.sphere_new(id, ptr0, ptr1, radius);
         this.__wbg_ptr = ret >>> 0;
+        SphereFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
 }
 
 const TableConfigFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_tableconfig_free(ptr >>> 0));
+    : new FinalizationRegistry(ptr => wasm.__wbg_tableconfig_free(ptr >>> 0, 1));
 /**
 */
 export class TableConfig {
@@ -397,7 +419,7 @@ export class TableConfig {
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_tableconfig_free(ptr);
+        wasm.__wbg_tableconfig_free(ptr, 0);
     }
     /**
     * @param {number} height
@@ -405,13 +427,14 @@ export class TableConfig {
     constructor(height) {
         const ret = wasm.tableconfig_new(height);
         this.__wbg_ptr = ret >>> 0;
+        TableConfigFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
 }
 
 const Vector4fFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_vector4f_free(ptr >>> 0));
+    : new FinalizationRegistry(ptr => wasm.__wbg_vector4f_free(ptr >>> 0, 1));
 /**
 */
 export class Vector4f {
@@ -433,7 +456,7 @@ export class Vector4f {
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_vector4f_free(ptr);
+        wasm.__wbg_vector4f_free(ptr, 0);
     }
     /**
     * @returns {number}
@@ -496,6 +519,7 @@ export class Vector4f {
     constructor(x, y, z, w) {
         const ret = wasm.vector4f_new(x, y, z, w);
         this.__wbg_ptr = ret >>> 0;
+        Vector4fFinalization.register(this, this.__wbg_ptr, this);
         return this;
     }
 }
@@ -545,6 +569,7 @@ function __wbg_get_imports() {
         const ret = Sphere.__unwrap(takeObject(arg0));
         return ret;
     };
+    imports.wbg.__wbg_random_4a6f48b07d1eab14 = typeof Math.random == 'function' ? Math.random : notDefined('Math.random');
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));
     };
@@ -552,16 +577,17 @@ function __wbg_get_imports() {
     return imports;
 }
 
-function __wbg_init_memory(imports, maybe_memory) {
+function __wbg_init_memory(imports, memory) {
 
 }
 
 function __wbg_finalize_init(instance, module) {
     wasm = instance.exports;
     __wbg_init.__wbindgen_wasm_module = module;
-    cachedInt32Memory0 = null;
-    cachedUint32Memory0 = null;
-    cachedUint8Memory0 = null;
+    cachedDataViewMemory0 = null;
+    cachedUint32ArrayMemory0 = null;
+    cachedUint8ArrayMemory0 = null;
+
 
 
     return wasm;
@@ -569,6 +595,12 @@ function __wbg_finalize_init(instance, module) {
 
 function initSync(module) {
     if (wasm !== undefined) return wasm;
+
+
+    if (typeof module !== 'undefined' && Object.getPrototypeOf(module) === Object.prototype)
+    ({module} = module)
+    else
+    console.warn('using deprecated parameters for `initSync()`; pass a single object instead')
 
     const imports = __wbg_get_imports();
 
@@ -583,24 +615,30 @@ function initSync(module) {
     return __wbg_finalize_init(instance, module);
 }
 
-async function __wbg_init(input) {
+async function __wbg_init(module_or_path) {
     if (wasm !== undefined) return wasm;
 
-    if (typeof input === 'undefined') {
-        input = new URL('lib_game_logic_bg.wasm', import.meta.url);
+
+    if (typeof module_or_path !== 'undefined' && Object.getPrototypeOf(module_or_path) === Object.prototype)
+    ({module_or_path} = module_or_path)
+    else
+    console.warn('using deprecated parameters for the initialization function; pass a single object instead')
+
+    if (typeof module_or_path === 'undefined') {
+        module_or_path = new URL('lib_game_logic_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
-    if (typeof input === 'string' || (typeof Request === 'function' && input instanceof Request) || (typeof URL === 'function' && input instanceof URL)) {
-        input = fetch(input);
+    if (typeof module_or_path === 'string' || (typeof Request === 'function' && module_or_path instanceof Request) || (typeof URL === 'function' && module_or_path instanceof URL)) {
+        module_or_path = fetch(module_or_path);
     }
 
     __wbg_init_memory(imports);
 
-    const { instance, module } = await __wbg_load(await input, imports);
+    const { instance, module } = await __wbg_load(await module_or_path, imports);
 
     return __wbg_finalize_init(instance, module);
 }
 
-export { initSync }
+export { initSync };
 export default __wbg_init;

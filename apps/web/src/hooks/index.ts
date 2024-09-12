@@ -1,2 +1,2 @@
 export { useGameSession } from "./useGameSession";
-export { useStateWithCurrent } from "./useStateWithCurrent";
+export { useStateWithRef } from "./useStateWithRef";

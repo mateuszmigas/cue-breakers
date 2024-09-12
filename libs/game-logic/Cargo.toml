@@ -7,6 +7,7 @@ description = "Game logic library"
 [dependencies]
 lib-physics = { path = "../physics" }
 wasm-bindgen = "0.2.92"
+js-sys = "0.3.70"
 
 [lib]
 crate-type = ["cdylib", "rlib"]

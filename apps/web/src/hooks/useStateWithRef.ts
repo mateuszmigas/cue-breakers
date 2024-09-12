@@ -1,8 +1,6 @@
 import { useRef, useState } from "react";
 
-export const useStateWithCurrent = <T>(
-  value: T
-): [T, (newState: T) => void, () => T] => {
+export const useStateWithRef = <T>(value: T): [T, (newState: T) => void, T] => {
   const stateRef = useRef<T>(value);
   const [state, setState] = useState<T>(value);
 
@@ -12,7 +10,7 @@ export const useStateWithCurrent = <T>(
       stateRef.current = newState;
       setState(newState);
     },
-    () => stateRef.current,
+    stateRef.current,
   ];
 };
 
