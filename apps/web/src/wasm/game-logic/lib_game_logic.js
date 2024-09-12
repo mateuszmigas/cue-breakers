@@ -265,6 +265,17 @@ export class GameSession {
         wasm.gamesession_update(this.__wbg_ptr, delta_time);
     }
     /**
+    * @param {number} count
+    */
+    add_balls(count) {
+        wasm.gamesession_add_balls(this.__wbg_ptr, count);
+    }
+    /**
+    */
+    clear_balls() {
+        wasm.gamesession_clear_balls(this.__wbg_ptr);
+    }
+    /**
     * @returns {Uint32Array}
     */
     get_objects_ids() {

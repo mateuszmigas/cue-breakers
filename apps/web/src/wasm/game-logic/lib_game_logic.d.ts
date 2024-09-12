@@ -52,6 +52,13 @@ export class GameSession {
 */
   update(delta_time: number): void;
 /**
+* @param {number} count
+*/
+  add_balls(count: number): void;
+/**
+*/
+  clear_balls(): void;
+/**
 * @returns {Uint32Array}
 */
   get_objects_ids(): Uint32Array;
@@ -140,6 +147,8 @@ export interface InitOutput {
   readonly __wbg_gamesession_free: (a: number, b: number) => void;
   readonly gamesession_new: (a: number) => number;
   readonly gamesession_update: (a: number, b: number) => void;
+  readonly gamesession_add_balls: (a: number, b: number) => void;
+  readonly gamesession_clear_balls: (a: number) => void;
   readonly gamesession_get_objects_ids: (a: number, b: number) => void;
   readonly gamesession_get_objects_ptr: (a: number) => number;
   readonly gamesession_get_objects_count: (a: number) => number;

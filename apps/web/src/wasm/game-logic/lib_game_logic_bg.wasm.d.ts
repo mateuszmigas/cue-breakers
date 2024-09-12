@@ -15,6 +15,8 @@ export function __wbg_set_gameobject_scale(a: number, b: number): void;
 export function __wbg_gamesession_free(a: number, b: number): void;
 export function gamesession_new(a: number): number;
 export function gamesession_update(a: number, b: number): void;
+export function gamesession_add_balls(a: number, b: number): void;
+export function gamesession_clear_balls(a: number): void;
 export function gamesession_get_objects_ids(a: number, b: number): void;
 export function gamesession_get_objects_ptr(a: number): number;
 export function gamesession_get_objects_count(a: number): number;

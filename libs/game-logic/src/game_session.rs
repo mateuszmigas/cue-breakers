@@ -10,32 +10,30 @@ pub struct GameSession {
     objects: Vec<GameObject>,
 }
 
+static CONSTANTS: Constants = Constants {
+    edge_min_x: -2.731,
+    edge_max_x: 2.731,
+    edge_min_z: -1.191,
+    edge_max_z: 1.191,
+    height: 1.42,
+};
+
 #[wasm_bindgen]
 impl GameSession {
     pub fn new(_game_type: GameType) -> Self {
-        let num_balls = 1_000;
+        let num_balls = 16;
         let mut objects = Vec::with_capacity(num_balls);
 
-        let constants = Constants {
-            edge_min_x: -2.731,
-            edge_max_x: 2.731,
-            edge_min_z: -1.191,
-            edge_max_z: 1.191,
-            height: 1.42,
-        };
-
         for i in 0..num_balls {
-            let x = (Math::random() as f32 - 0.5) * (constants.edge_max_x - constants.edge_min_x);
-            let z = (Math::random() as f32 - 0.5) * (constants.edge_max_z - constants.edge_min_z);
+            let x = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_x - CONSTANTS.edge_min_x);
+            let z = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_z - CONSTANTS.edge_min_z);
 
             objects.push(GameObject {
                 instance_id: i as u32,
                 type_id: 0, // Assuming 0 represents "ball" type
-                position: Vector4f::new(x, constants.height, z, 1.0),
+                position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
                 rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
                 scale: 0.15,
-                // rotation: Vector4f::new(rotation_x, rotation_y, rotation_z, 0.0),
-                // texture_url: format!("balls/ball_{}.png", i % 16),
             });
         }
 
@@ -48,6 +46,25 @@ impl GameSession {
             object.rotation.y += delta_time;
             object.rotation.z += delta_time;
         }
+    }
+
+    pub fn add_balls(&mut self, count: usize) {
+        for _ in 0..count {
+            let x = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_x - CONSTANTS.edge_min_x);
+            let z = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_z - CONSTANTS.edge_min_z);
+
+            self.objects.push(GameObject {
+                instance_id: self.objects.len() as u32,
+                type_id: 0,
+                position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
+                rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
+                scale: 0.15,
+            });
+        }
+    }
+
+    pub fn clear_balls(&mut self) {
+        self.objects.clear();
     }
 
     pub fn get_objects_ids(&self) -> Vec<u32> {
