@@ -44,23 +44,20 @@ export class EightBallGameSession {
 export class GameObject {
   free(): void;
 /**
+* @param {number} instance_id
+* @param {GameObjectType} type_id
+* @returns {GameObject}
+*/
+  static new(instance_id: number, type_id: GameObjectType): GameObject;
+/**
 */
   instance_id: number;
 /**
 */
-  position: Vector4f;
-/**
-*/
-  rotation: Vector4f;
-/**
-*/
-  scale: number;
+  rigid_body: RigidBody;
 /**
 */
   type_id: GameObjectType;
-/**
-*/
-  velocity: Vector4f;
 }
 /**
 */
@@ -82,6 +79,27 @@ export class NineBallGameSession {
 * @returns {number}
 */
   get_objects_count(): number;
+}
+/**
+*/
+export class RigidBody {
+  free(): void;
+/**
+* @returns {RigidBody}
+*/
+  static default(): RigidBody;
+/**
+*/
+  position: Vector4f;
+/**
+*/
+  rotation: Vector4f;
+/**
+*/
+  scale: number;
+/**
+*/
+  velocity: Vector4f;
 }
 /**
 */
@@ -112,24 +130,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_gameobject_free: (a: number, b: number) => void;
-  readonly __wbg_get_gameobject_instance_id: (a: number) => number;
-  readonly __wbg_set_gameobject_instance_id: (a: number, b: number) => void;
-  readonly __wbg_get_gameobject_type_id: (a: number) => number;
-  readonly __wbg_set_gameobject_type_id: (a: number, b: number) => void;
-  readonly __wbg_get_gameobject_position: (a: number) => number;
-  readonly __wbg_set_gameobject_position: (a: number, b: number) => void;
-  readonly __wbg_get_gameobject_rotation: (a: number) => number;
-  readonly __wbg_set_gameobject_rotation: (a: number, b: number) => void;
-  readonly __wbg_get_gameobject_velocity: (a: number) => number;
-  readonly __wbg_set_gameobject_velocity: (a: number, b: number) => void;
-  readonly __wbg_get_gameobject_scale: (a: number) => number;
-  readonly __wbg_set_gameobject_scale: (a: number, b: number) => void;
-  readonly __wbg_nineballgamesession_free: (a: number, b: number) => void;
-  readonly nineballgamesession_new: () => number;
-  readonly nineballgamesession_update: (a: number, b: number) => void;
-  readonly nineballgamesession_get_objects_ptr: (a: number) => number;
-  readonly nineballgamesession_get_objects_count: (a: number) => number;
   readonly __wbg_eightballgamesession_free: (a: number, b: number) => void;
   readonly eightballgamesession_new: () => number;
   readonly eightballgamesession_update: (a: number, b: number) => void;
@@ -138,6 +138,29 @@ export interface InitOutput {
   readonly eightballgamesession_get_objects_ids: (a: number, b: number) => void;
   readonly eightballgamesession_get_objects_ptr: (a: number) => number;
   readonly eightballgamesession_get_objects_count: (a: number) => number;
+  readonly __wbg_gameobject_free: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_instance_id: (a: number) => number;
+  readonly __wbg_set_gameobject_instance_id: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_type_id: (a: number) => number;
+  readonly __wbg_set_gameobject_type_id: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_rigid_body: (a: number) => number;
+  readonly __wbg_set_gameobject_rigid_body: (a: number, b: number) => void;
+  readonly gameobject_new: (a: number, b: number) => number;
+  readonly __wbg_nineballgamesession_free: (a: number, b: number) => void;
+  readonly nineballgamesession_new: () => number;
+  readonly nineballgamesession_update: (a: number, b: number) => void;
+  readonly nineballgamesession_get_objects_ptr: (a: number) => number;
+  readonly nineballgamesession_get_objects_count: (a: number) => number;
+  readonly __wbg_rigidbody_free: (a: number, b: number) => void;
+  readonly __wbg_get_rigidbody_position: (a: number) => number;
+  readonly __wbg_set_rigidbody_position: (a: number, b: number) => void;
+  readonly __wbg_get_rigidbody_rotation: (a: number) => number;
+  readonly __wbg_set_rigidbody_rotation: (a: number, b: number) => void;
+  readonly __wbg_get_rigidbody_velocity: (a: number) => number;
+  readonly __wbg_set_rigidbody_velocity: (a: number, b: number) => void;
+  readonly __wbg_get_rigidbody_scale: (a: number) => number;
+  readonly __wbg_set_rigidbody_scale: (a: number, b: number) => void;
+  readonly rigidbody_default: () => number;
   readonly __wbg_vector4f_free: (a: number, b: number) => void;
   readonly __wbg_get_vector4f_x: (a: number) => number;
   readonly __wbg_set_vector4f_x: (a: number, b: number) => void;

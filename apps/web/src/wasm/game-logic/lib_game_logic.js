@@ -18,13 +18,6 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
-    }
-    return instance.ptr;
-}
-
 let cachedDataViewMemory0 = null;
 
 function getDataViewMemory0() {
@@ -46,6 +39,13 @@ function getUint32ArrayMemory0() {
 function getArrayU32FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return getUint32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
+}
+
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+    return instance.ptr;
 }
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
@@ -142,6 +142,14 @@ const GameObjectFinalization = (typeof FinalizationRegistry === 'undefined')
 */
 export class GameObject {
 
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(GameObject.prototype);
+        obj.__wbg_ptr = ptr;
+        GameObjectFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
         this.__wbg_ptr = 0;
@@ -180,62 +188,28 @@ export class GameObject {
         wasm.__wbg_set_gameobject_type_id(this.__wbg_ptr, arg0);
     }
     /**
-    * @returns {Vector4f}
+    * @returns {RigidBody}
     */
-    get position() {
-        const ret = wasm.__wbg_get_gameobject_position(this.__wbg_ptr);
-        return Vector4f.__wrap(ret);
+    get rigid_body() {
+        const ret = wasm.__wbg_get_gameobject_rigid_body(this.__wbg_ptr);
+        return RigidBody.__wrap(ret);
     }
     /**
-    * @param {Vector4f} arg0
+    * @param {RigidBody} arg0
     */
-    set position(arg0) {
-        _assertClass(arg0, Vector4f);
+    set rigid_body(arg0) {
+        _assertClass(arg0, RigidBody);
         var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_gameobject_position(this.__wbg_ptr, ptr0);
+        wasm.__wbg_set_gameobject_rigid_body(this.__wbg_ptr, ptr0);
     }
     /**
-    * @returns {Vector4f}
+    * @param {number} instance_id
+    * @param {GameObjectType} type_id
+    * @returns {GameObject}
     */
-    get rotation() {
-        const ret = wasm.__wbg_get_gameobject_rotation(this.__wbg_ptr);
-        return Vector4f.__wrap(ret);
-    }
-    /**
-    * @param {Vector4f} arg0
-    */
-    set rotation(arg0) {
-        _assertClass(arg0, Vector4f);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_gameobject_rotation(this.__wbg_ptr, ptr0);
-    }
-    /**
-    * @returns {Vector4f}
-    */
-    get velocity() {
-        const ret = wasm.__wbg_get_gameobject_velocity(this.__wbg_ptr);
-        return Vector4f.__wrap(ret);
-    }
-    /**
-    * @param {Vector4f} arg0
-    */
-    set velocity(arg0) {
-        _assertClass(arg0, Vector4f);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_gameobject_velocity(this.__wbg_ptr, ptr0);
-    }
-    /**
-    * @returns {number}
-    */
-    get scale() {
-        const ret = wasm.__wbg_get_gameobject_scale(this.__wbg_ptr);
-        return ret;
-    }
-    /**
-    * @param {number} arg0
-    */
-    set scale(arg0) {
-        wasm.__wbg_set_gameobject_scale(this.__wbg_ptr, arg0);
+    static new(instance_id, type_id) {
+        const ret = wasm.gameobject_new(instance_id, type_id);
+        return GameObject.__wrap(ret);
     }
 }
 
@@ -291,6 +265,99 @@ export class NineBallGameSession {
     get_objects_count() {
         const ret = wasm.nineballgamesession_get_objects_count(this.__wbg_ptr);
         return ret >>> 0;
+    }
+}
+
+const RigidBodyFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_rigidbody_free(ptr >>> 0, 1));
+/**
+*/
+export class RigidBody {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(RigidBody.prototype);
+        obj.__wbg_ptr = ptr;
+        RigidBodyFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        RigidBodyFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_rigidbody_free(ptr, 0);
+    }
+    /**
+    * @returns {Vector4f}
+    */
+    get position() {
+        const ret = wasm.__wbg_get_rigidbody_position(this.__wbg_ptr);
+        return Vector4f.__wrap(ret);
+    }
+    /**
+    * @param {Vector4f} arg0
+    */
+    set position(arg0) {
+        _assertClass(arg0, Vector4f);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_rigidbody_position(this.__wbg_ptr, ptr0);
+    }
+    /**
+    * @returns {Vector4f}
+    */
+    get rotation() {
+        const ret = wasm.__wbg_get_rigidbody_rotation(this.__wbg_ptr);
+        return Vector4f.__wrap(ret);
+    }
+    /**
+    * @param {Vector4f} arg0
+    */
+    set rotation(arg0) {
+        _assertClass(arg0, Vector4f);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_rigidbody_rotation(this.__wbg_ptr, ptr0);
+    }
+    /**
+    * @returns {Vector4f}
+    */
+    get velocity() {
+        const ret = wasm.__wbg_get_rigidbody_velocity(this.__wbg_ptr);
+        return Vector4f.__wrap(ret);
+    }
+    /**
+    * @param {Vector4f} arg0
+    */
+    set velocity(arg0) {
+        _assertClass(arg0, Vector4f);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_rigidbody_velocity(this.__wbg_ptr, ptr0);
+    }
+    /**
+    * @returns {number}
+    */
+    get scale() {
+        const ret = wasm.__wbg_get_rigidbody_scale(this.__wbg_ptr);
+        return ret;
+    }
+    /**
+    * @param {number} arg0
+    */
+    set scale(arg0) {
+        wasm.__wbg_set_rigidbody_scale(this.__wbg_ptr, arg0);
+    }
+    /**
+    * @returns {RigidBody}
+    */
+    static default() {
+        const ret = wasm.rigidbody_default();
+        return RigidBody.__wrap(ret);
     }
 }
 

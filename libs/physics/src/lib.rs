@@ -1,5 +1,27 @@
-use glam::Vec4;
+// use glam::Vec4;
 use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
+#[repr(C)]
+#[derive(Copy, Clone)]
+pub struct RigidBody {
+    pub position: Vector4f,
+    pub rotation: Vector4f,
+    pub velocity: Vector4f,
+    pub scale: f32,
+}
+
+#[wasm_bindgen]
+impl RigidBody {
+    pub fn default() -> Self {
+        RigidBody {
+            position: Vector4f::new(0.0, 0.0, 0.0, 0.0),
+            rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
+            velocity: Vector4f::new(0.0, 0.0, 0.0, 0.0),
+            scale: 0.0,
+        }
+    }
+}
 
 #[wasm_bindgen]
 #[derive(Copy, Clone)]

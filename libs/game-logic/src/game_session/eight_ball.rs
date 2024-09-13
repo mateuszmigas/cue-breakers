@@ -1,15 +1,20 @@
 use crate::game_object::GameObject;
 use crate::game_session::constants::CONSTANTS;
+use js_sys::Math;
 use lib_physics::{rotate, Vector4f};
 use wasm_bindgen::prelude::*;
-extern crate js_sys;
-use js_sys::Math;
 
 use super::constants::GameObjectType;
 
 #[wasm_bindgen]
 pub struct EightBallGameSession {
     objects: Vec<GameObject>,
+}
+
+macro_rules! js_log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
 }
 
 #[wasm_bindgen]
@@ -21,39 +26,41 @@ impl EightBallGameSession {
         for i in 0..num_balls {
             let x = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_x - CONSTANTS.edge_min_x);
             let z = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_z - CONSTANTS.edge_min_z);
+            let mut game_object = GameObject::new(i as u32 + 10, GameObjectType::Ball);
 
-            objects.push(GameObject {
-                instance_id: i as u32,
-                type_id: GameObjectType::Ball,
-                position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
-                rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
-                velocity: Vector4f::new(0.0, 0.0, 0.0, 0.0),
-                scale: 0.15,
-            });
+            game_object.rigid_body.position = Vector4f::new(x, CONSTANTS.height, z, 1.0);
+            game_object.rigid_body.scale = 0.15;
+            objects.push(game_object);
         }
 
         Self { objects }
     }
 
     pub fn update(&mut self, delta_time: f32) {
+        let _any_ball_moving = self.any_ball_moving();
+
         for object in &mut self.objects {
-            object.rotation = rotate(object.rotation, delta_time);
+            object.rigid_body.rotation = rotate(object.rigid_body.rotation, delta_time);
         }
     }
 
+    fn any_ball_moving(&self) -> bool {
+        self.objects.iter().any(|obj| {
+            obj.rigid_body.velocity.x.abs() > CONSTANTS.movement_threshold
+                || obj.rigid_body.velocity.z.abs() > CONSTANTS.movement_threshold
+        })
+    }
+
     pub fn add_balls(&mut self, count: usize) {
-        for _ in 0..count {
+        let num_balls = self.objects.len();
+        for i in num_balls..num_balls + count {
             let x = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_x - CONSTANTS.edge_min_x);
             let z = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_z - CONSTANTS.edge_min_z);
 
-            self.objects.push(GameObject {
-                instance_id: self.objects.len() as u32,
-                type_id: GameObjectType::Ball,
-                position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
-                rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
-                velocity: Vector4f::new(0.0, 0.0, 0.0, 0.0),
-                scale: 0.15,
-            });
+            let mut game_object = GameObject::new(i as u32, GameObjectType::Ball);
+            game_object.rigid_body.position = Vector4f::new(x, CONSTANTS.height, z, 1.0);
+            game_object.rigid_body.scale = 0.15;
+            self.objects.push(game_object);
         }
     }
 

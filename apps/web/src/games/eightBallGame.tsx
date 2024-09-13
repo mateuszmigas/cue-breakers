@@ -41,6 +41,7 @@ const GameScene = memo(
           )
         )
       ) {
+        console.log(newGameObjects);
         setGameObjects(newGameObjects);
       }
 
@@ -53,14 +54,14 @@ const GameScene = memo(
         const ballRef = ballsRefs.current[i];
         if (ballRef) {
           ballRef.position.set(
-            updatedObject.position.x,
-            updatedObject.position.y,
-            updatedObject.position.z
+            updatedObject.rigid_body.position.x,
+            updatedObject.rigid_body.position.y,
+            updatedObject.rigid_body.position.z
           );
           ballRef.rotation.set(
-            updatedObject.rotation.x,
-            updatedObject.rotation.y,
-            updatedObject.rotation.z
+            updatedObject.rigid_body.rotation.x,
+            updatedObject.rigid_body.rotation.y,
+            updatedObject.rigid_body.rotation.z
           );
         }
       }
@@ -77,9 +78,9 @@ const GameScene = memo(
             ref={(ref: never) => (ballsRefs.current[index] = ref)}
             key={index}
             index={index}
-            position={ball.position}
-            rotation={ball.rotation}
-            scale={ball.scale}
+            position={ball.rigid_body.position}
+            rotation={ball.rigid_body.rotation}
+            scale={ball.rigid_body.scale}
             textureUrl={`balls/ball_${index % 16}.png`}
           />
         ))}

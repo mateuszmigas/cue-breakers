@@ -16,9 +16,9 @@ impl NineBallGameSession {
     }
 
     pub fn update(&mut self, delta_time: f32) {
-        for object in &mut self.objects {
-            object.rotation.x += delta_time;
-        }
+        // for object in &mut self.objects {
+        //     object.rigid_body.rotation.x += delta_time;
+        // }
     }
 
     pub fn get_objects_ptr(&self) -> *const GameObject {
