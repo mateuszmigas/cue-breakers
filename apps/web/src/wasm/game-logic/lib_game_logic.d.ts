@@ -15,8 +15,35 @@ export function add_floats(x: number, y: number): number;
 export function run_table_simulation(spheres: (Sphere)[], table_config: TableConfig, delta_time: number): (Sphere)[];
 /**
 */
-export enum GameType {
-  EightBall = 0,
+export class EightBallGameSession {
+  free(): void;
+/**
+* @returns {EightBallGameSession}
+*/
+  static new(): EightBallGameSession;
+/**
+* @param {number} delta_time
+*/
+  update(delta_time: number): void;
+/**
+* @param {number} count
+*/
+  add_balls(count: number): void;
+/**
+*/
+  clear_balls(): void;
+/**
+* @returns {Uint32Array}
+*/
+  get_objects_ids(): Uint32Array;
+/**
+* @returns {number}
+*/
+  get_objects_ptr(): number;
+/**
+* @returns {number}
+*/
+  get_objects_count(): number;
 }
 /**
 */
@@ -40,28 +67,16 @@ export class GameObject {
 }
 /**
 */
-export class GameSession {
+export class NineBallGameSession {
   free(): void;
 /**
-* @param {GameType} _game_type
-* @returns {GameSession}
+* @returns {NineBallGameSession}
 */
-  static new(_game_type: GameType): GameSession;
+  static new(): NineBallGameSession;
 /**
 * @param {number} delta_time
 */
   update(delta_time: number): void;
-/**
-* @param {number} count
-*/
-  add_balls(count: number): void;
-/**
-*/
-  clear_balls(): void;
-/**
-* @returns {Uint32Array}
-*/
-  get_objects_ids(): Uint32Array;
 /**
 * @returns {number}
 */
@@ -133,6 +148,11 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly __wbg_nineballgamesession_free: (a: number, b: number) => void;
+  readonly nineballgamesession_new: () => number;
+  readonly nineballgamesession_update: (a: number, b: number) => void;
+  readonly nineballgamesession_get_objects_ptr: (a: number) => number;
+  readonly nineballgamesession_get_objects_count: (a: number) => number;
   readonly __wbg_gameobject_free: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_instance_id: (a: number) => number;
   readonly __wbg_set_gameobject_instance_id: (a: number, b: number) => void;
@@ -144,14 +164,14 @@ export interface InitOutput {
   readonly __wbg_set_gameobject_rotation: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_scale: (a: number) => number;
   readonly __wbg_set_gameobject_scale: (a: number, b: number) => void;
-  readonly __wbg_gamesession_free: (a: number, b: number) => void;
-  readonly gamesession_new: (a: number) => number;
-  readonly gamesession_update: (a: number, b: number) => void;
-  readonly gamesession_add_balls: (a: number, b: number) => void;
-  readonly gamesession_clear_balls: (a: number) => void;
-  readonly gamesession_get_objects_ids: (a: number, b: number) => void;
-  readonly gamesession_get_objects_ptr: (a: number) => number;
-  readonly gamesession_get_objects_count: (a: number) => number;
+  readonly __wbg_eightballgamesession_free: (a: number, b: number) => void;
+  readonly eightballgamesession_new: () => number;
+  readonly eightballgamesession_update: (a: number, b: number) => void;
+  readonly eightballgamesession_add_balls: (a: number, b: number) => void;
+  readonly eightballgamesession_clear_balls: (a: number) => void;
+  readonly eightballgamesession_get_objects_ids: (a: number, b: number) => void;
+  readonly eightballgamesession_get_objects_ptr: (a: number) => number;
+  readonly eightballgamesession_get_objects_count: (a: number) => number;
   readonly __wbg_vector4f_free: (a: number, b: number) => void;
   readonly __wbg_get_vector4f_x: (a: number) => number;
   readonly __wbg_set_vector4f_x: (a: number, b: number) => void;

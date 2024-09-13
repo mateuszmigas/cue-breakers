@@ -1,4 +1,5 @@
-import { GameSession, GameObject } from "@/wasm/game-logic";
+import { GameSession } from "@/hooks/useGameSession";
+import { GameObject } from "@/wasm/game-logic";
 
 export const getObjects = (
   gameSession: GameSession | null,

@@ -1,26 +1,18 @@
 use crate::game_object::GameObject;
-use crate::game_type::GameType;
+use crate::game_session::constants::CONSTANTS;
 use lib_physics::Vector4f;
 use wasm_bindgen::prelude::*;
 extern crate js_sys;
 use js_sys::Math;
 
 #[wasm_bindgen]
-pub struct GameSession {
+pub struct EightBallGameSession {
     objects: Vec<GameObject>,
 }
 
-static CONSTANTS: Constants = Constants {
-    edge_min_x: -2.731,
-    edge_max_x: 2.731,
-    edge_min_z: -1.191,
-    edge_max_z: 1.191,
-    height: 1.42,
-};
-
 #[wasm_bindgen]
-impl GameSession {
-    pub fn new(_game_type: GameType) -> Self {
+impl EightBallGameSession {
+    pub fn new() -> Self {
         let num_balls = 16;
         let mut objects = Vec::with_capacity(num_balls);
 
@@ -78,12 +70,4 @@ impl GameSession {
     pub fn get_objects_count(&self) -> usize {
         self.objects.len()
     }
-}
-
-struct Constants {
-    edge_min_x: f32,
-    edge_max_x: f32,
-    edge_min_z: f32,
-    edge_max_z: f32,
-    height: f32,
 }

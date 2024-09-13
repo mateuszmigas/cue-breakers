@@ -1,4 +1,4 @@
-import { EightBallGame } from "./games/eightBallScene";
+import { EightBallGame } from "./games/eightBallGame";
 
 export const App = () => {
   // const [rooms, setRooms] = useState<GameRoom[]>([]);
@@ -31,3 +31,4 @@ export const App = () => {
     </div>
   );
 };
+

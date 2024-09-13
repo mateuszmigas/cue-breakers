@@ -3,12 +3,13 @@ import { GO_Ball } from "./objects/ball";
 import { Stats, OrbitControls } from "@react-three/drei";
 import { GO_Table } from "./objects/table";
 import { memo, useRef } from "react";
-import { GameObject, GameSession, GameType } from "@/wasm/game-logic";
+import { EightBallGameSession, GameObject } from "@/wasm/game-logic";
 import { useGameSession, useStateWithRef } from "@/hooks";
 import { areArraysEqual } from "@/utils/array";
 import { Mesh } from "three";
 import { getObjects } from "./objects/mapper";
 import { Button } from "@/components/ui/button";
+import { GameSession } from "@/hooks/useGameSession";
 
 const GameScene = memo(
   (props: {
@@ -95,8 +96,8 @@ export const EightBallGame = memo(() => {
   >([]);
 
   const [gameSessionInstance, gameSessionMemory] = useGameSession(
-    GameType.EightBall
-  );
+    "eight_ball"
+  ) as [EightBallGameSession, WebAssembly.Memory];
 
   return (
     <div className="size-full relative overflow-hidden">
@@ -135,3 +136,4 @@ export const EightBallGame = memo(() => {
     </div>
   );
 });
+

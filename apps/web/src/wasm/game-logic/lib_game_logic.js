@@ -131,9 +131,88 @@ export function run_table_simulation(spheres, table_config, delta_time) {
 }
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
+
+const EightBallGameSessionFinalization = (typeof FinalizationRegistry === 'undefined')
+    ? { register: () => {}, unregister: () => {} }
+    : new FinalizationRegistry(ptr => wasm.__wbg_eightballgamesession_free(ptr >>> 0, 1));
 /**
 */
-export const GameType = Object.freeze({ EightBall:0,"0":"EightBall", });
+export class EightBallGameSession {
+
+    static __wrap(ptr) {
+        ptr = ptr >>> 0;
+        const obj = Object.create(EightBallGameSession.prototype);
+        obj.__wbg_ptr = ptr;
+        EightBallGameSessionFinalization.register(obj, obj.__wbg_ptr, obj);
+        return obj;
+    }
+
+    __destroy_into_raw() {
+        const ptr = this.__wbg_ptr;
+        this.__wbg_ptr = 0;
+        EightBallGameSessionFinalization.unregister(this);
+        return ptr;
+    }
+
+    free() {
+        const ptr = this.__destroy_into_raw();
+        wasm.__wbg_eightballgamesession_free(ptr, 0);
+    }
+    /**
+    * @returns {EightBallGameSession}
+    */
+    static new() {
+        const ret = wasm.eightballgamesession_new();
+        return EightBallGameSession.__wrap(ret);
+    }
+    /**
+    * @param {number} delta_time
+    */
+    update(delta_time) {
+        wasm.eightballgamesession_update(this.__wbg_ptr, delta_time);
+    }
+    /**
+    * @param {number} count
+    */
+    add_balls(count) {
+        wasm.eightballgamesession_add_balls(this.__wbg_ptr, count);
+    }
+    /**
+    */
+    clear_balls() {
+        wasm.eightballgamesession_clear_balls(this.__wbg_ptr);
+    }
+    /**
+    * @returns {Uint32Array}
+    */
+    get_objects_ids() {
+        try {
+            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
+            wasm.eightballgamesession_get_objects_ids(retptr, this.__wbg_ptr);
+            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
+            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
+            var v1 = getArrayU32FromWasm0(r0, r1).slice();
+            wasm.__wbindgen_free(r0, r1 * 4, 4);
+            return v1;
+        } finally {
+            wasm.__wbindgen_add_to_stack_pointer(16);
+        }
+    }
+    /**
+    * @returns {number}
+    */
+    get_objects_ptr() {
+        const ret = wasm.eightballgamesession_get_objects_ptr(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+    /**
+    * @returns {number}
+    */
+    get_objects_count() {
+        const ret = wasm.eightballgamesession_get_objects_count(this.__wbg_ptr);
+        return ret >>> 0;
+    }
+}
 
 const GameObjectFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
@@ -224,85 +303,57 @@ export class GameObject {
     }
 }
 
-const GameSessionFinalization = (typeof FinalizationRegistry === 'undefined')
+const NineBallGameSessionFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_gamesession_free(ptr >>> 0, 1));
+    : new FinalizationRegistry(ptr => wasm.__wbg_nineballgamesession_free(ptr >>> 0, 1));
 /**
 */
-export class GameSession {
+export class NineBallGameSession {
 
     static __wrap(ptr) {
         ptr = ptr >>> 0;
-        const obj = Object.create(GameSession.prototype);
+        const obj = Object.create(NineBallGameSession.prototype);
         obj.__wbg_ptr = ptr;
-        GameSessionFinalization.register(obj, obj.__wbg_ptr, obj);
+        NineBallGameSessionFinalization.register(obj, obj.__wbg_ptr, obj);
         return obj;
     }
 
     __destroy_into_raw() {
         const ptr = this.__wbg_ptr;
         this.__wbg_ptr = 0;
-        GameSessionFinalization.unregister(this);
+        NineBallGameSessionFinalization.unregister(this);
         return ptr;
     }
 
     free() {
         const ptr = this.__destroy_into_raw();
-        wasm.__wbg_gamesession_free(ptr, 0);
+        wasm.__wbg_nineballgamesession_free(ptr, 0);
     }
     /**
-    * @param {GameType} _game_type
-    * @returns {GameSession}
+    * @returns {NineBallGameSession}
     */
-    static new(_game_type) {
-        const ret = wasm.gamesession_new(_game_type);
-        return GameSession.__wrap(ret);
+    static new() {
+        const ret = wasm.nineballgamesession_new();
+        return NineBallGameSession.__wrap(ret);
     }
     /**
     * @param {number} delta_time
     */
     update(delta_time) {
-        wasm.gamesession_update(this.__wbg_ptr, delta_time);
-    }
-    /**
-    * @param {number} count
-    */
-    add_balls(count) {
-        wasm.gamesession_add_balls(this.__wbg_ptr, count);
-    }
-    /**
-    */
-    clear_balls() {
-        wasm.gamesession_clear_balls(this.__wbg_ptr);
-    }
-    /**
-    * @returns {Uint32Array}
-    */
-    get_objects_ids() {
-        try {
-            const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-            wasm.gamesession_get_objects_ids(retptr, this.__wbg_ptr);
-            var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-            var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-            var v1 = getArrayU32FromWasm0(r0, r1).slice();
-            wasm.__wbindgen_free(r0, r1 * 4, 4);
-            return v1;
-        } finally {
-            wasm.__wbindgen_add_to_stack_pointer(16);
-        }
+        wasm.nineballgamesession_update(this.__wbg_ptr, delta_time);
     }
     /**
     * @returns {number}
     */
     get_objects_ptr() {
-        const ret = wasm.gamesession_get_objects_ptr(this.__wbg_ptr);
+        const ret = wasm.nineballgamesession_get_objects_ptr(this.__wbg_ptr);
         return ret >>> 0;
     }
     /**
     * @returns {number}
     */
     get_objects_count() {
-        const ret = wasm.gamesession_get_objects_count(this.__wbg_ptr);
+        const ret = wasm.nineballgamesession_get_objects_count(this.__wbg_ptr);
         return ret >>> 0;
     }
 }
@@ -569,9 +620,6 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
-    };
     imports.wbg.__wbg_sphere_new = function(arg0) {
         const ret = Sphere.__wrap(arg0);
         return addHeapObject(ret);
@@ -579,6 +627,9 @@ function __wbg_get_imports() {
     imports.wbg.__wbg_sphere_unwrap = function(arg0) {
         const ret = Sphere.__unwrap(takeObject(arg0));
         return ret;
+    };
+    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
+        takeObject(arg0);
     };
     imports.wbg.__wbg_random_4a6f48b07d1eab14 = typeof Math.random == 'function' ? Math.random : notDefined('Math.random');
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {

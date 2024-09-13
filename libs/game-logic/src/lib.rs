@@ -1,16 +1,7 @@
 mod game_object;
 mod game_session;
-mod game_type;
 
 pub use game_object::GameObject;
-pub use game_session::GameSession;
-pub use game_type::GameType;
-
-macro_rules! js_log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
-}
 
 //game state
 

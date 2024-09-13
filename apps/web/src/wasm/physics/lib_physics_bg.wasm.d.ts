@@ -1,7 +1,7 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
-export function __wbg_vector4f_free(a: number): void;
+export function __wbg_vector4f_free(a: number, b: number): void;
 export function __wbg_get_vector4f_x(a: number): number;
 export function __wbg_set_vector4f_x(a: number, b: number): void;
 export function __wbg_get_vector4f_y(a: number): number;
@@ -12,7 +12,7 @@ export function __wbg_get_vector4f_w(a: number): number;
 export function __wbg_set_vector4f_w(a: number, b: number): void;
 export function vector4f_new(a: number, b: number, c: number, d: number): number;
 export function add_floats(a: number, b: number): number;
-export function __wbg_sphere_free(a: number): void;
+export function __wbg_sphere_free(a: number, b: number): void;
 export function __wbg_get_sphere_id(a: number): number;
 export function __wbg_set_sphere_id(a: number, b: number): void;
 export function __wbg_get_sphere_position(a: number): number;
@@ -22,7 +22,7 @@ export function __wbg_set_sphere_rotation(a: number, b: number): void;
 export function __wbg_get_sphere_radius(a: number): number;
 export function __wbg_set_sphere_radius(a: number, b: number): void;
 export function sphere_new(a: number, b: number, c: number, d: number): number;
-export function __wbg_tableconfig_free(a: number): void;
+export function __wbg_tableconfig_free(a: number, b: number): void;
 export function tableconfig_new(a: number): number;
 export function run_table_simulation(a: number, b: number, c: number, d: number, e: number): void;
 export function __wbindgen_add_to_stack_pointer(a: number): number;

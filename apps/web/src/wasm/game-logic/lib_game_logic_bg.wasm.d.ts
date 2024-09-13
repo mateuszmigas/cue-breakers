@@ -1,6 +1,11 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function __wbg_nineballgamesession_free(a: number, b: number): void;
+export function nineballgamesession_new(): number;
+export function nineballgamesession_update(a: number, b: number): void;
+export function nineballgamesession_get_objects_ptr(a: number): number;
+export function nineballgamesession_get_objects_count(a: number): number;
 export function __wbg_gameobject_free(a: number, b: number): void;
 export function __wbg_get_gameobject_instance_id(a: number): number;
 export function __wbg_set_gameobject_instance_id(a: number, b: number): void;
@@ -12,14 +17,14 @@ export function __wbg_get_gameobject_rotation(a: number): number;
 export function __wbg_set_gameobject_rotation(a: number, b: number): void;
 export function __wbg_get_gameobject_scale(a: number): number;
 export function __wbg_set_gameobject_scale(a: number, b: number): void;
-export function __wbg_gamesession_free(a: number, b: number): void;
-export function gamesession_new(a: number): number;
-export function gamesession_update(a: number, b: number): void;
-export function gamesession_add_balls(a: number, b: number): void;
-export function gamesession_clear_balls(a: number): void;
-export function gamesession_get_objects_ids(a: number, b: number): void;
-export function gamesession_get_objects_ptr(a: number): number;
-export function gamesession_get_objects_count(a: number): number;
+export function __wbg_eightballgamesession_free(a: number, b: number): void;
+export function eightballgamesession_new(): number;
+export function eightballgamesession_update(a: number, b: number): void;
+export function eightballgamesession_add_balls(a: number, b: number): void;
+export function eightballgamesession_clear_balls(a: number): void;
+export function eightballgamesession_get_objects_ids(a: number, b: number): void;
+export function eightballgamesession_get_objects_ptr(a: number): number;
+export function eightballgamesession_get_objects_count(a: number): number;
 export function __wbg_vector4f_free(a: number, b: number): void;
 export function __wbg_get_vector4f_x(a: number): number;
 export function __wbg_set_vector4f_x(a: number, b: number): void;
