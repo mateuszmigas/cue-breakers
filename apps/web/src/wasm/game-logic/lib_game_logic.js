@@ -1,25 +1,5 @@
 let wasm;
 
-const heap = new Array(128).fill(undefined);
-
-heap.push(undefined, null, true, false);
-
-function getObject(idx) { return heap[idx]; }
-
-let heap_next = heap.length;
-
-function dropObject(idx) {
-    if (idx < 132) return;
-    heap[idx] = heap_next;
-    heap_next = idx;
-}
-
-function takeObject(idx) {
-    const ret = getObject(idx);
-    dropObject(idx);
-    return ret;
-}
-
 const cachedTextDecoder = (typeof TextDecoder !== 'undefined' ? new TextDecoder('utf-8', { ignoreBOM: true, fatal: true }) : { decode: () => { throw Error('TextDecoder not available') } } );
 
 if (typeof TextDecoder !== 'undefined') { cachedTextDecoder.decode(); };
@@ -66,68 +46,6 @@ function getUint32ArrayMemory0() {
 function getArrayU32FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return getUint32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
-}
-/**
-* @param {number} x
-* @param {number} y
-* @returns {number}
-*/
-export function add_floats(x, y) {
-    const ret = wasm.add_floats(x, y);
-    return ret;
-}
-
-function addHeapObject(obj) {
-    if (heap_next === heap.length) heap.push(heap.length + 1);
-    const idx = heap_next;
-    heap_next = heap[idx];
-
-    heap[idx] = obj;
-    return idx;
-}
-
-let WASM_VECTOR_LEN = 0;
-
-function passArrayJsValueToWasm0(array, malloc) {
-    const ptr = malloc(array.length * 4, 4) >>> 0;
-    const mem = getDataViewMemory0();
-    for (let i = 0; i < array.length; i++) {
-        mem.setUint32(ptr + 4 * i, addHeapObject(array[i]), true);
-    }
-    WASM_VECTOR_LEN = array.length;
-    return ptr;
-}
-
-function getArrayJsValueFromWasm0(ptr, len) {
-    ptr = ptr >>> 0;
-    const mem = getDataViewMemory0();
-    const result = [];
-    for (let i = ptr; i < ptr + 4 * len; i += 4) {
-        result.push(takeObject(mem.getUint32(i, true)));
-    }
-    return result;
-}
-/**
-* @param {(Sphere)[]} spheres
-* @param {TableConfig} table_config
-* @param {number} delta_time
-* @returns {(Sphere)[]}
-*/
-export function run_table_simulation(spheres, table_config, delta_time) {
-    try {
-        const retptr = wasm.__wbindgen_add_to_stack_pointer(-16);
-        const ptr0 = passArrayJsValueToWasm0(spheres, wasm.__wbindgen_malloc);
-        const len0 = WASM_VECTOR_LEN;
-        _assertClass(table_config, TableConfig);
-        wasm.run_table_simulation(retptr, ptr0, len0, table_config.__wbg_ptr, delta_time);
-        var r0 = getDataViewMemory0().getInt32(retptr + 4 * 0, true);
-        var r1 = getDataViewMemory0().getInt32(retptr + 4 * 1, true);
-        var v2 = getArrayJsValueFromWasm0(r0, r1).slice();
-        wasm.__wbindgen_free(r0, r1 * 4, 4);
-        return v2;
-    } finally {
-        wasm.__wbindgen_add_to_stack_pointer(16);
-    }
 }
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
@@ -358,142 +276,6 @@ export class NineBallGameSession {
     }
 }
 
-const SphereFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_sphere_free(ptr >>> 0, 1));
-/**
-*/
-export class Sphere {
-
-    static __wrap(ptr) {
-        ptr = ptr >>> 0;
-        const obj = Object.create(Sphere.prototype);
-        obj.__wbg_ptr = ptr;
-        SphereFinalization.register(obj, obj.__wbg_ptr, obj);
-        return obj;
-    }
-
-    static __unwrap(jsValue) {
-        if (!(jsValue instanceof Sphere)) {
-            return 0;
-        }
-        return jsValue.__destroy_into_raw();
-    }
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        SphereFinalization.unregister(this);
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_sphere_free(ptr, 0);
-    }
-    /**
-    * @returns {number}
-    */
-    get id() {
-        const ret = wasm.__wbg_get_sphere_id(this.__wbg_ptr);
-        return ret >>> 0;
-    }
-    /**
-    * @param {number} arg0
-    */
-    set id(arg0) {
-        wasm.__wbg_set_sphere_id(this.__wbg_ptr, arg0);
-    }
-    /**
-    * @returns {Vector4f}
-    */
-    get position() {
-        const ret = wasm.__wbg_get_sphere_position(this.__wbg_ptr);
-        return Vector4f.__wrap(ret);
-    }
-    /**
-    * @param {Vector4f} arg0
-    */
-    set position(arg0) {
-        _assertClass(arg0, Vector4f);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_sphere_position(this.__wbg_ptr, ptr0);
-    }
-    /**
-    * @returns {Vector4f}
-    */
-    get rotation() {
-        const ret = wasm.__wbg_get_sphere_rotation(this.__wbg_ptr);
-        return Vector4f.__wrap(ret);
-    }
-    /**
-    * @param {Vector4f} arg0
-    */
-    set rotation(arg0) {
-        _assertClass(arg0, Vector4f);
-        var ptr0 = arg0.__destroy_into_raw();
-        wasm.__wbg_set_sphere_rotation(this.__wbg_ptr, ptr0);
-    }
-    /**
-    * @returns {number}
-    */
-    get radius() {
-        const ret = wasm.__wbg_get_sphere_radius(this.__wbg_ptr);
-        return ret;
-    }
-    /**
-    * @param {number} arg0
-    */
-    set radius(arg0) {
-        wasm.__wbg_set_sphere_radius(this.__wbg_ptr, arg0);
-    }
-    /**
-    * @param {number} id
-    * @param {Vector4f} position
-    * @param {Vector4f} rotation
-    * @param {number} radius
-    */
-    constructor(id, position, rotation, radius) {
-        _assertClass(position, Vector4f);
-        var ptr0 = position.__destroy_into_raw();
-        _assertClass(rotation, Vector4f);
-        var ptr1 = rotation.__destroy_into_raw();
-        const ret = wasm.sphere_new(id, ptr0, ptr1, radius);
-        this.__wbg_ptr = ret >>> 0;
-        SphereFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-}
-
-const TableConfigFinalization = (typeof FinalizationRegistry === 'undefined')
-    ? { register: () => {}, unregister: () => {} }
-    : new FinalizationRegistry(ptr => wasm.__wbg_tableconfig_free(ptr >>> 0, 1));
-/**
-*/
-export class TableConfig {
-
-    __destroy_into_raw() {
-        const ptr = this.__wbg_ptr;
-        this.__wbg_ptr = 0;
-        TableConfigFinalization.unregister(this);
-        return ptr;
-    }
-
-    free() {
-        const ptr = this.__destroy_into_raw();
-        wasm.__wbg_tableconfig_free(ptr, 0);
-    }
-    /**
-    * @param {number} height
-    */
-    constructor(height) {
-        const ret = wasm.tableconfig_new(height);
-        this.__wbg_ptr = ret >>> 0;
-        TableConfigFinalization.register(this, this.__wbg_ptr, this);
-        return this;
-    }
-}
-
 const Vector4fFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
     : new FinalizationRegistry(ptr => wasm.__wbg_vector4f_free(ptr >>> 0, 1));
@@ -620,17 +402,6 @@ async function __wbg_load(module, imports) {
 function __wbg_get_imports() {
     const imports = {};
     imports.wbg = {};
-    imports.wbg.__wbg_sphere_new = function(arg0) {
-        const ret = Sphere.__wrap(arg0);
-        return addHeapObject(ret);
-    };
-    imports.wbg.__wbg_sphere_unwrap = function(arg0) {
-        const ret = Sphere.__unwrap(takeObject(arg0));
-        return ret;
-    };
-    imports.wbg.__wbindgen_object_drop_ref = function(arg0) {
-        takeObject(arg0);
-    };
     imports.wbg.__wbg_random_4a6f48b07d1eab14 = typeof Math.random == 'function' ? Math.random : notDefined('Math.random');
     imports.wbg.__wbindgen_throw = function(arg0, arg1) {
         throw new Error(getStringFromWasm0(arg0, arg1));

@@ -1,12 +1,6 @@
 use glam::Vec4;
 use wasm_bindgen::prelude::*;
 
-macro_rules! js_log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
-}
-
 #[wasm_bindgen]
 #[derive(Copy, Clone)]
 #[repr(C)]
@@ -25,61 +19,13 @@ impl Vector4f {
     }
 }
 
-#[wasm_bindgen]
-pub fn add_floats(x: f32, y: f32) -> f32 {
-    x + y
-}
-
-#[wasm_bindgen]
-#[derive(Copy, Clone)]
-pub struct Sphere {
-    pub id: u32,
-    pub position: Vector4f,
-    pub rotation: Vector4f,
-    pub radius: f32,
-}
-
-#[wasm_bindgen]
-impl Sphere {
-    #[wasm_bindgen(constructor)]
-    pub fn new(id: u32, position: Vector4f, rotation: Vector4f, radius: f32) -> Self {
-        Sphere {
-            id,
-            position,
-            rotation,
-            radius,
-        }
-    }
-}
-#[wasm_bindgen]
-pub struct TableConfig {
-    height: f32,
-}
-
-#[wasm_bindgen]
-impl TableConfig {
-    #[wasm_bindgen(constructor)]
-    pub fn new(height: f32) -> Self {
-        TableConfig { height }
-    }
-}
-
-#[wasm_bindgen]
-pub fn run_table_simulation(
-    spheres: Vec<Sphere>,
-    table_config: &TableConfig,
-    delta_time: f32,
-) -> Vec<Sphere> {
-    spheres
-        .into_iter()
-        .map(|mut sphere| {
-            // Rotate the sphere
-            sphere.rotation.x += delta_time;
-            sphere.rotation.y += delta_time;
-            sphere.rotation.z += delta_time;
-            sphere
-        })
-        .collect()
+pub fn rotate(vector: Vector4f, delta_time: f32) -> Vector4f {
+    Vector4f::new(
+        vector.x + delta_time,
+        vector.y + delta_time,
+        vector.z + delta_time,
+        vector.w + delta_time,
+    )
 }
 
 // #[cfg(test)]

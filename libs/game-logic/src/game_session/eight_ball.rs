@@ -1,6 +1,6 @@
 use crate::game_object::GameObject;
 use crate::game_session::constants::CONSTANTS;
-use lib_physics::Vector4f;
+use lib_physics::{rotate, Vector4f};
 use wasm_bindgen::prelude::*;
 extern crate js_sys;
 use js_sys::Math;
@@ -34,9 +34,7 @@ impl EightBallGameSession {
 
     pub fn update(&mut self, delta_time: f32) {
         for object in &mut self.objects {
-            object.rotation.x += delta_time;
-            object.rotation.y += delta_time;
-            object.rotation.z += delta_time;
+            object.rotation = rotate(object.rotation, delta_time);
         }
     }
 

@@ -12,25 +12,9 @@ args = ["--filter", "./apps/web", "run", "dev"]
 [tasks.dev]
 run_task = { name = ["dev-web", "dev-api"], parallel = true }
 
-[tasks.build-physics-wasm]
-script = "wasm-pack build libs/physics --target web && cp libs/physics/pkg/*.{wasm,js,ts} apps/web/src/wasm/physics"
-
-[tasks.build-game-logic-wasm]
+[tasks.build-wasm]
 script = "wasm-pack build libs/game-logic --target web && cp libs/game-logic/pkg/*.{wasm,js,ts} apps/web/src/wasm/game-logic"
 
-[tasks.build-wasm]
-dependencies = ["build-physics-wasm", "build-game-logic-wasm"]
-
-[tasks.dev-physics-wasm]
-command = "cargo"
-args = ["watch", "-w", "libs/physics", "-x", "make build-physics-wasm"]
-
-[tasks.dev-game-logic-wasm]
-command = "cargo"
-args = ["watch", "-w", "libs/game-logic", "-x", "make build-game-logic-wasm"]
-
 [tasks.dev-wasm]
-run_task = { name = [
-    "dev-physics-wasm",
-    "dev-game-logic-wasm",
-], parallel = true }
+command = "cargo"
+args = ["watch", "-w", "libs", "-x", "make build-wasm"]
