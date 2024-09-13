@@ -41,7 +41,6 @@ const GameScene = memo(
           )
         )
       ) {
-        console.log(newGameObjects);
         setGameObjects(newGameObjects);
       }
 

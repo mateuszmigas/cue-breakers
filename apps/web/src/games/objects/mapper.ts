@@ -11,13 +11,13 @@ type ByteOffset = { value: number };
 
 const readFloat32 = (dataView: DataView, byteOffset: ByteOffset) => {
   const value = dataView.getFloat32(byteOffset.value, true);
-  byteOffset.value += 4;
+  byteOffset.value += sizes.float32;
   return value;
 };
 
 const readUint32 = (dataView: DataView, byteOffset: ByteOffset) => {
   const value = dataView.getUint32(byteOffset.value, true);
-  byteOffset.value += 4;
+  byteOffset.value += sizes.uint32;
   return value;
 };
 

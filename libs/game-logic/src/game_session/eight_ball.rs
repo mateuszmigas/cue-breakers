@@ -1,5 +1,5 @@
-use crate::game_object::GameObject;
 use crate::game_session::constants::CONSTANTS;
+use crate::{game_object::GameObject, js_log};
 use js_sys::Math;
 use lib_physics::{rotate, Vector4f};
 use wasm_bindgen::prelude::*;
@@ -9,12 +9,6 @@ use super::constants::GameObjectType;
 #[wasm_bindgen]
 pub struct EightBallGameSession {
     objects: Vec<GameObject>,
-}
-
-macro_rules! js_log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
 }
 
 #[wasm_bindgen]

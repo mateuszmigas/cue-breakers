@@ -15,7 +15,7 @@ impl NineBallGameSession {
         }
     }
 
-    pub fn update(&mut self, delta_time: f32) {
+    pub fn update(&mut self, _delta_time: f32) {
         // for object in &mut self.objects {
         //     object.rigid_body.rotation.x += delta_time;
         // }

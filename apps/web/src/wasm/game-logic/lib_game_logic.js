@@ -247,10 +247,10 @@ export class NineBallGameSession {
         return NineBallGameSession.__wrap(ret);
     }
     /**
-    * @param {number} delta_time
+    * @param {number} _delta_time
     */
-    update(delta_time) {
-        wasm.nineballgamesession_update(this.__wbg_ptr, delta_time);
+    update(_delta_time) {
+        wasm.nineballgamesession_update(this.__wbg_ptr, _delta_time);
     }
     /**
     * @returns {number}

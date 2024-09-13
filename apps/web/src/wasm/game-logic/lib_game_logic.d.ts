@@ -68,9 +68,9 @@ export class NineBallGameSession {
 */
   static new(): NineBallGameSession;
 /**
-* @param {number} delta_time
+* @param {number} _delta_time
 */
-  update(delta_time: number): void;
+  update(_delta_time: number): void;
 /**
 * @returns {number}
 */
