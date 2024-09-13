@@ -1,5 +1,5 @@
 use crate::game_session::constants::CONSTANTS;
-use crate::{game_object::GameObject, js_log};
+use crate::{game_object::GameObject, js_log, utils};
 use js_sys::Math;
 use lib_physics::{rotate, Vector4f};
 use wasm_bindgen::prelude::*;
@@ -14,20 +14,60 @@ pub struct EightBallGameSession {
 #[wasm_bindgen]
 impl EightBallGameSession {
     pub fn new() -> Self {
-        let num_balls = 16;
-        let mut objects = Vec::with_capacity(num_balls);
+        let mut half_balls = vec![1, 2, 3, 4, 5, 6, 7];
+        let mut full_balls = vec![9, 10, 11, 12, 13, 14, 15];
+        let mut objects = Vec::with_capacity(half_balls.len() + full_balls.len() + 2);
 
-        for i in 0..num_balls {
-            let x = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_x - CONSTANTS.edge_min_x);
-            let z = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_z - CONSTANTS.edge_min_z);
-            let mut game_object = GameObject::new(i as u32 + 10, GameObjectType::Ball);
+        utils::shuffle(&mut half_balls, None);
+        utils::shuffle(&mut full_balls, None);
 
-            game_object.rigid_body.position = Vector4f::new(x, CONSTANTS.height, z, 1.0);
-            game_object.rigid_body.scale = 0.15;
-            objects.push(game_object);
+        objects.push(Self::create_ball(0, CONSTANTS.table.head_position, 0.0));
+        objects.push(Self::create_ball(8, CONSTANTS.table.foot_position, 0.0));
+
+        // Place balls in specific positions
+        let positions = vec![
+            (2.0, 0.0),
+            (1.0, 1.0),
+            (0.0, 2.0),
+            (-1.0, 3.0),
+            (-2.0, 4.0),
+            (1.0, -1.0),
+            (0.0, -2.0),
+            (-1.0, -3.0),
+            (-2.0, -4.0),
+            (-2.0, 2.0),
+            (-2.0, 0.0),
+            (-2.0, -2.0),
+            (-1.0, -1.0),
+            (-1.0, 1.0),
+        ];
+
+        for (i, (x_mul, y_mul)) in positions.iter().enumerate() {
+            let ball_id = if i % 2 == 0 {
+                full_balls.pop().unwrap()
+            } else {
+                half_balls.pop().unwrap()
+            };
+
+            let ball = Self::create_ball(
+                ball_id,
+                CONSTANTS.table.foot_position
+                    + x_mul * CONSTANTS.ball.distances.x
+                    + (Math::random() as f32) * CONSTANTS.ball.distance_delta,
+                y_mul * CONSTANTS.ball.distances.y
+                    + (Math::random() as f32) * CONSTANTS.ball.distance_delta,
+            );
+            objects.push(ball);
         }
 
         Self { objects }
+    }
+
+    fn create_ball(instance_id: u32, x: f32, y: f32) -> GameObject {
+        let mut ball = GameObject::new(instance_id, GameObjectType::Ball);
+        ball.rigid_body.scale = 0.15;
+        ball.rigid_body.position = Vector4f::new(x, CONSTANTS.table.height, y, 1.0);
+        ball
     }
 
     pub fn update(&mut self, delta_time: f32) {
@@ -40,26 +80,9 @@ impl EightBallGameSession {
 
     fn any_ball_moving(&self) -> bool {
         self.objects.iter().any(|obj| {
-            obj.rigid_body.velocity.x.abs() > CONSTANTS.movement_threshold
-                || obj.rigid_body.velocity.z.abs() > CONSTANTS.movement_threshold
+            obj.rigid_body.velocity.x.abs() > CONSTANTS.ball.movement_threshold
+                || obj.rigid_body.velocity.z.abs() > CONSTANTS.ball.movement_threshold
         })
-    }
-
-    pub fn add_balls(&mut self, count: usize) {
-        let num_balls = self.objects.len();
-        for i in num_balls..num_balls + count {
-            let x = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_x - CONSTANTS.edge_min_x);
-            let z = (Math::random() as f32 - 0.5) * (CONSTANTS.edge_max_z - CONSTANTS.edge_min_z);
-
-            let mut game_object = GameObject::new(i as u32, GameObjectType::Ball);
-            game_object.rigid_body.position = Vector4f::new(x, CONSTANTS.height, z, 1.0);
-            game_object.rigid_body.scale = 0.15;
-            self.objects.push(game_object);
-        }
-    }
-
-    pub fn clear_balls(&mut self) {
-        self.objects.clear();
     }
 
     pub fn get_objects_ids(&self) -> Vec<u32> {

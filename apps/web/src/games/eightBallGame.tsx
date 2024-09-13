@@ -80,7 +80,7 @@ const GameScene = memo(
             position={ball.rigid_body.position}
             rotation={ball.rigid_body.rotation}
             scale={ball.rigid_body.scale}
-            textureUrl={`balls/ball_${index % 16}.png`}
+            textureUrl={`balls/ball_${ball.instance_id}.png`}
           />
         ))}
         <OrbitControls target={[0, 1.42, 0]} />
@@ -117,23 +117,9 @@ export const EightBallGame = memo(() => {
         </Canvas>
       )}
       <div className="absolute top-0 right-0 flex flex-col gap-2 p-2">
-        <Button
-          onClick={() => {
-            gameSessionInstance?.add_balls(100);
-          }}
-        >
-          Add 100 balls
-        </Button>
-        <Button
-          onClick={() => {
-            gameSessionInstance?.clear_balls();
-          }}
-        >
-          Clear balls
-        </Button>
+        <Button onClick={() => {}}>Shoot</Button>
         <span className="text-white">{`Balls count ${gameObjects.length}`}</span>
       </div>
     </div>
   );
 });
-

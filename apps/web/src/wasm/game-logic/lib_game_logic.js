@@ -18,6 +18,13 @@ function getStringFromWasm0(ptr, len) {
     return cachedTextDecoder.decode(getUint8ArrayMemory0().subarray(ptr, ptr + len));
 }
 
+function _assertClass(instance, klass) {
+    if (!(instance instanceof klass)) {
+        throw new Error(`expected instance of ${klass.name}`);
+    }
+    return instance.ptr;
+}
+
 let cachedDataViewMemory0 = null;
 
 function getDataViewMemory0() {
@@ -39,13 +46,6 @@ function getUint32ArrayMemory0() {
 function getArrayU32FromWasm0(ptr, len) {
     ptr = ptr >>> 0;
     return getUint32ArrayMemory0().subarray(ptr / 4, ptr / 4 + len);
-}
-
-function _assertClass(instance, klass) {
-    if (!(instance instanceof klass)) {
-        throw new Error(`expected instance of ${klass.name}`);
-    }
-    return instance.ptr;
 }
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
@@ -91,17 +91,6 @@ export class EightBallGameSession {
     */
     update(delta_time) {
         wasm.eightballgamesession_update(this.__wbg_ptr, delta_time);
-    }
-    /**
-    * @param {number} count
-    */
-    add_balls(count) {
-        wasm.eightballgamesession_add_balls(this.__wbg_ptr, count);
-    }
-    /**
-    */
-    clear_balls() {
-        wasm.eightballgamesession_clear_balls(this.__wbg_ptr);
     }
     /**
     * @returns {Uint32Array}
