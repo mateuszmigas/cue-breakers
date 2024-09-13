@@ -58,6 +58,9 @@ export class GameObject {
 /**
 */
   type_id: GameObjectType;
+/**
+*/
+  velocity: Vector4f;
 }
 /**
 */
@@ -118,6 +121,8 @@ export interface InitOutput {
   readonly __wbg_set_gameobject_position: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_rotation: (a: number) => number;
   readonly __wbg_set_gameobject_rotation: (a: number, b: number) => void;
+  readonly __wbg_get_gameobject_velocity: (a: number) => number;
+  readonly __wbg_set_gameobject_velocity: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_scale: (a: number) => number;
   readonly __wbg_set_gameobject_scale: (a: number, b: number) => void;
   readonly __wbg_nineballgamesession_free: (a: number, b: number) => void;

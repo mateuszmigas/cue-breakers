@@ -210,6 +210,21 @@ export class GameObject {
         wasm.__wbg_set_gameobject_rotation(this.__wbg_ptr, ptr0);
     }
     /**
+    * @returns {Vector4f}
+    */
+    get velocity() {
+        const ret = wasm.__wbg_get_gameobject_velocity(this.__wbg_ptr);
+        return Vector4f.__wrap(ret);
+    }
+    /**
+    * @param {Vector4f} arg0
+    */
+    set velocity(arg0) {
+        _assertClass(arg0, Vector4f);
+        var ptr0 = arg0.__destroy_into_raw();
+        wasm.__wbg_set_gameobject_velocity(this.__wbg_ptr, ptr0);
+    }
+    /**
     * @returns {number}
     */
     get scale() {

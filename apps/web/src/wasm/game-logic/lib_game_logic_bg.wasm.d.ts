@@ -10,6 +10,8 @@ export function __wbg_get_gameobject_position(a: number): number;
 export function __wbg_set_gameobject_position(a: number, b: number): void;
 export function __wbg_get_gameobject_rotation(a: number): number;
 export function __wbg_set_gameobject_rotation(a: number, b: number): void;
+export function __wbg_get_gameobject_velocity(a: number): number;
+export function __wbg_set_gameobject_velocity(a: number, b: number): void;
 export function __wbg_get_gameobject_scale(a: number): number;
 export function __wbg_set_gameobject_scale(a: number, b: number): void;
 export function __wbg_nineballgamesession_free(a: number, b: number): void;

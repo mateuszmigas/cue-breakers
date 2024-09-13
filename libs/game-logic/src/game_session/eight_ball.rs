@@ -27,6 +27,7 @@ impl EightBallGameSession {
                 type_id: GameObjectType::Ball,
                 position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
                 rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
+                velocity: Vector4f::new(0.0, 0.0, 0.0, 0.0),
                 scale: 0.15,
             });
         }
@@ -50,6 +51,7 @@ impl EightBallGameSession {
                 type_id: GameObjectType::Ball,
                 position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
                 rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
+                velocity: Vector4f::new(0.0, 0.0, 0.0, 0.0),
                 scale: 0.15,
             });
         }

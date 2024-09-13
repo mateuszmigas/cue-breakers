@@ -9,7 +9,13 @@ export const getObjects = (
   const objectsPtr = gameSession.get_objects_ptr();
   const objectCount = gameSession.get_objects_count();
 
-  const objectSize = 4 + 4 + 4 * 4 + 4 * 4 + 4;
+  const objectSize =
+    4 + // id
+    4 + // typeId
+    4 * 4 + // position
+    4 * 4 + // rotation
+    4 * 4 + // velocity
+    4; // scale
 
   const dataView = new DataView(
     memory.buffer,
@@ -34,8 +40,15 @@ export const getObjects = (
         z: dataView.getFloat32((byteOffset += 4), true),
         w: dataView.getFloat32((byteOffset += 4), true),
       },
+      velocity: {
+        x: dataView.getFloat32((byteOffset += 4), true),
+        y: dataView.getFloat32((byteOffset += 4), true),
+        z: dataView.getFloat32((byteOffset += 4), true),
+        w: dataView.getFloat32((byteOffset += 4), true),
+      },
       scale: dataView.getFloat32((byteOffset += 4), true),
     } as never as GameObject;
+
     objects.push(object);
   }
 

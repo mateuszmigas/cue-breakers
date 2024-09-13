@@ -9,5 +9,6 @@ pub struct GameObject {
     pub type_id: GameObjectType,
     pub position: Vector4f,
     pub rotation: Vector4f,
+    pub velocity: Vector4f,
     pub scale: f32,
 }
