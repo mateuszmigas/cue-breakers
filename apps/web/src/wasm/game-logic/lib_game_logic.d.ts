@@ -2,6 +2,13 @@
 /* eslint-disable */
 /**
 */
+export enum GameObjectType {
+  Ball = 0,
+  Cue = 1,
+  Table = 2,
+}
+/**
+*/
 export class EightBallGameSession {
   free(): void;
 /**
@@ -50,7 +57,7 @@ export class GameObject {
   scale: number;
 /**
 */
-  type_id: number;
+  type_id: GameObjectType;
 }
 /**
 */
@@ -102,11 +109,6 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
-  readonly __wbg_nineballgamesession_free: (a: number, b: number) => void;
-  readonly nineballgamesession_new: () => number;
-  readonly nineballgamesession_update: (a: number, b: number) => void;
-  readonly nineballgamesession_get_objects_ptr: (a: number) => number;
-  readonly nineballgamesession_get_objects_count: (a: number) => number;
   readonly __wbg_gameobject_free: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_instance_id: (a: number) => number;
   readonly __wbg_set_gameobject_instance_id: (a: number, b: number) => void;
@@ -118,6 +120,11 @@ export interface InitOutput {
   readonly __wbg_set_gameobject_rotation: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_scale: (a: number) => number;
   readonly __wbg_set_gameobject_scale: (a: number, b: number) => void;
+  readonly __wbg_nineballgamesession_free: (a: number, b: number) => void;
+  readonly nineballgamesession_new: () => number;
+  readonly nineballgamesession_update: (a: number, b: number) => void;
+  readonly nineballgamesession_get_objects_ptr: (a: number) => number;
+  readonly nineballgamesession_get_objects_count: (a: number) => number;
   readonly __wbg_eightballgamesession_free: (a: number, b: number) => void;
   readonly eightballgamesession_new: () => number;
   readonly eightballgamesession_update: (a: number, b: number) => void;

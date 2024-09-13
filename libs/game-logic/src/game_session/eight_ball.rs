@@ -5,6 +5,8 @@ use wasm_bindgen::prelude::*;
 extern crate js_sys;
 use js_sys::Math;
 
+use super::constants::GameObjectType;
+
 #[wasm_bindgen]
 pub struct EightBallGameSession {
     objects: Vec<GameObject>,
@@ -22,7 +24,7 @@ impl EightBallGameSession {
 
             objects.push(GameObject {
                 instance_id: i as u32,
-                type_id: 0, // Assuming 0 represents "ball" type
+                type_id: GameObjectType::Ball,
                 position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
                 rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
                 scale: 0.15,
@@ -45,7 +47,7 @@ impl EightBallGameSession {
 
             self.objects.push(GameObject {
                 instance_id: self.objects.len() as u32,
-                type_id: 0,
+                type_id: GameObjectType::Ball,
                 position: Vector4f::new(x, CONSTANTS.height, z, 1.0),
                 rotation: Vector4f::new(0.0, 0.0, 0.0, 0.0),
                 scale: 0.15,

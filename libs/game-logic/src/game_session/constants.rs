@@ -1,3 +1,5 @@
+use wasm_bindgen::prelude::*;
+
 pub struct Constants {
     pub edge_min_x: f32,
     pub edge_max_x: f32,
@@ -13,3 +15,12 @@ pub static CONSTANTS: Constants = Constants {
     edge_max_z: 1.191,
     height: 1.42,
 };
+
+#[wasm_bindgen]
+#[repr(u32)]
+#[derive(Copy, Clone)]
+pub enum GameObjectType {
+    Ball = 0,
+    Cue = 1,
+    Table = 2,
+}

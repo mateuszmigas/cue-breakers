@@ -49,6 +49,9 @@ function getArrayU32FromWasm0(ptr, len) {
 }
 
 function notDefined(what) { return () => { throw new Error(`${what} is not defined`); }; }
+/**
+*/
+export const GameObjectType = Object.freeze({ Ball:0,"0":"Ball",Cue:1,"1":"Cue",Table:2,"2":"Table", });
 
 const EightBallGameSessionFinalization = (typeof FinalizationRegistry === 'undefined')
     ? { register: () => {}, unregister: () => {} }
@@ -164,14 +167,14 @@ export class GameObject {
         wasm.__wbg_set_gameobject_instance_id(this.__wbg_ptr, arg0);
     }
     /**
-    * @returns {number}
+    * @returns {GameObjectType}
     */
     get type_id() {
         const ret = wasm.__wbg_get_gameobject_type_id(this.__wbg_ptr);
-        return ret >>> 0;
+        return ret;
     }
     /**
-    * @param {number} arg0
+    * @param {GameObjectType} arg0
     */
     set type_id(arg0) {
         wasm.__wbg_set_gameobject_type_id(this.__wbg_ptr, arg0);
