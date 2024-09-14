@@ -1,7 +1,6 @@
+use crate::game_object_type::GameObjectType;
 use lib_physics::RigidBody;
 use wasm_bindgen::prelude::*;
-
-use crate::game_object_type::GameObjectType;
 
 #[wasm_bindgen]
 #[repr(C)]

@@ -1,12 +1,11 @@
 import { Canvas, useFrame } from "@react-three/fiber";
-import { GO_Ball } from "./objects/ball";
+import { GO_BallRef, GO_Ball } from "./objects/ball";
 import { Stats, OrbitControls } from "@react-three/drei";
 import { GO_Table } from "./objects/table";
 import { memo, useRef } from "react";
 import { EightBallGameSession, GameObject } from "@/wasm/game-logic";
 import { useGameSession, useStateWithRef } from "@/hooks";
 import { areArraysEqual } from "@/utils/array";
-import { Mesh } from "three";
 import { getObjects } from "./objects/mapper";
 import { Button } from "@/components/ui/button";
 import { GameSession } from "@/hooks/useGameSession";
@@ -26,7 +25,7 @@ const GameScene = memo(
       setGameObjects,
       gameObjectsRef,
     } = props;
-    const ballsRefs = useRef<Mesh[]>([]);
+    const ballsRefs = useRef<GO_BallRef[]>([]);
 
     useFrame((_, delta) => {
       if (!gameSessionInstance) return;
@@ -52,16 +51,8 @@ const GameScene = memo(
         const updatedObject = updatedObjects[i];
         const ballRef = ballsRefs.current[i];
         if (ballRef) {
-          ballRef.position.set(
-            updatedObject.rigid_body.position.x,
-            updatedObject.rigid_body.position.y,
-            updatedObject.rigid_body.position.z
-          );
-          ballRef.rotation.set(
-            updatedObject.rigid_body.rotation.x,
-            updatedObject.rigid_body.rotation.y,
-            updatedObject.rigid_body.rotation.z
-          );
+          ballRef.setPosition(updatedObject.rigid_body.position);
+          ballRef.setRotation(updatedObject.rigid_body.rotation);
         }
       }
     });
@@ -123,3 +114,4 @@ export const EightBallGame = memo(() => {
     </div>
   );
 });
+
