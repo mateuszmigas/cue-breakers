@@ -1,6 +1,12 @@
 /* tslint:disable */
 /* eslint-disable */
 export const memory: WebAssembly.Memory;
+export function __wbg_eightballgamesession_free(a: number, b: number): void;
+export function eightballgamesession_new(): number;
+export function eightballgamesession_update(a: number, b: number): void;
+export function eightballgamesession_get_objects_ids(a: number, b: number): void;
+export function eightballgamesession_get_objects_ptr(a: number): number;
+export function eightballgamesession_get_objects_count(a: number): number;
 export function __wbg_gameobject_free(a: number, b: number): void;
 export function __wbg_get_gameobject_instance_id(a: number): number;
 export function __wbg_set_gameobject_instance_id(a: number, b: number): void;
@@ -14,12 +20,6 @@ export function nineballgamesession_new(): number;
 export function nineballgamesession_update(a: number, b: number): void;
 export function nineballgamesession_get_objects_ptr(a: number): number;
 export function nineballgamesession_get_objects_count(a: number): number;
-export function __wbg_eightballgamesession_free(a: number, b: number): void;
-export function eightballgamesession_new(): number;
-export function eightballgamesession_update(a: number, b: number): void;
-export function eightballgamesession_get_objects_ids(a: number, b: number): void;
-export function eightballgamesession_get_objects_ptr(a: number): number;
-export function eightballgamesession_get_objects_count(a: number): number;
 export function __wbg_rigidbody_free(a: number, b: number): void;
 export function __wbg_get_rigidbody_position(a: number): number;
 export function __wbg_set_rigidbody_position(a: number, b: number): void;

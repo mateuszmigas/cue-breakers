@@ -123,6 +123,12 @@ export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembl
 
 export interface InitOutput {
   readonly memory: WebAssembly.Memory;
+  readonly __wbg_eightballgamesession_free: (a: number, b: number) => void;
+  readonly eightballgamesession_new: () => number;
+  readonly eightballgamesession_update: (a: number, b: number) => void;
+  readonly eightballgamesession_get_objects_ids: (a: number, b: number) => void;
+  readonly eightballgamesession_get_objects_ptr: (a: number) => number;
+  readonly eightballgamesession_get_objects_count: (a: number) => number;
   readonly __wbg_gameobject_free: (a: number, b: number) => void;
   readonly __wbg_get_gameobject_instance_id: (a: number) => number;
   readonly __wbg_set_gameobject_instance_id: (a: number, b: number) => void;
@@ -136,12 +142,6 @@ export interface InitOutput {
   readonly nineballgamesession_update: (a: number, b: number) => void;
   readonly nineballgamesession_get_objects_ptr: (a: number) => number;
   readonly nineballgamesession_get_objects_count: (a: number) => number;
-  readonly __wbg_eightballgamesession_free: (a: number, b: number) => void;
-  readonly eightballgamesession_new: () => number;
-  readonly eightballgamesession_update: (a: number, b: number) => void;
-  readonly eightballgamesession_get_objects_ids: (a: number, b: number) => void;
-  readonly eightballgamesession_get_objects_ptr: (a: number) => number;
-  readonly eightballgamesession_get_objects_count: (a: number) => number;
   readonly __wbg_rigidbody_free: (a: number, b: number) => void;
   readonly __wbg_get_rigidbody_position: (a: number) => number;
   readonly __wbg_set_rigidbody_position: (a: number, b: number) => void;

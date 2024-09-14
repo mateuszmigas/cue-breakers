@@ -1,10 +1,8 @@
 use crate::game_session::constants::CONSTANTS;
-use crate::{game_object::GameObject, js_log, utils};
+use crate::{game_object::GameObject, game_object_type::GameObjectType, js_log, utils};
 use js_sys::Math;
 use lib_physics::{rotate, Vector4f};
 use wasm_bindgen::prelude::*;
-
-use super::constants::GameObjectType;
 
 #[wasm_bindgen]
 pub struct EightBallGameSession {
@@ -52,9 +50,9 @@ impl EightBallGameSession {
             let ball = Self::create_ball(
                 ball_id,
                 CONSTANTS.table.foot_position
-                    + x_mul * CONSTANTS.ball.distances.x
+                    + x_mul * CONSTANTS.ball.distances.0
                     + (Math::random() as f32) * CONSTANTS.ball.distance_delta,
-                y_mul * CONSTANTS.ball.distances.y
+                y_mul * CONSTANTS.ball.distances.1
                     + (Math::random() as f32) * CONSTANTS.ball.distance_delta,
             );
             objects.push(ball);
